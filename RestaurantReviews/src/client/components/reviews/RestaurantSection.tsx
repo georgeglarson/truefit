@@ -18,6 +18,7 @@ export function RestaurantSection({ refreshKey, onMutate }: Props) {
   const [editCity, setEditCity] = useState("");
   const [editCuisine, setEditCuisine] = useState("");
   const [rowError, setRowError] = useState<Record<number, string>>({});
+  const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
 
   const listApi = useApi<Restaurant[]>();
   const createApi = useApi<Restaurant>();
@@ -46,6 +47,7 @@ export function RestaurantSection({ refreshKey, onMutate }: Props) {
     setEditName(r.name);
     setEditCity(r.city);
     setEditCuisine(r.cuisine);
+    setConfirmDelete(null);
   };
 
   const cancelEdit = () => {
@@ -69,7 +71,12 @@ export function RestaurantSection({ refreshKey, onMutate }: Props) {
   };
 
   const handleDelete = async (id: number) => {
+    if (confirmDelete !== id) {
+      setConfirmDelete(id);
+      return;
+    }
     setRowError((prev) => ({ ...prev, [id]: "" }));
+    setConfirmDelete(null);
     const res = await fetch(`/api/restaurants/${id}`, { method: "DELETE" });
     if (res.status === 204) {
       onMutate();
@@ -122,12 +129,23 @@ export function RestaurantSection({ refreshKey, onMutate }: Props) {
       {createApi.error && <div style={styles.error}>{createApi.error}</div>}
       {updateApi.error && <div style={styles.error}>{updateApi.error}</div>}
 
-      <input
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-        placeholder="Filter by city..."
-        style={styles.filterInput}
-      />
+      {listApi.loading && !listApi.data && (
+        <div style={{ color: "#64748b", fontSize: "13px", padding: "16px 0" }}>Loading restaurants...</div>
+      )}
+
+      <div style={styles.filterRow}>
+        <input
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          placeholder="Filter by city..."
+          style={styles.filterInput}
+        />
+        {filter && (
+          <span style={styles.filterLabel}>
+            {filtered.length} of {allRestaurants.length}
+          </span>
+        )}
+      </div>
 
       <table style={styles.table}>
         <thead>
@@ -140,15 +158,15 @@ export function RestaurantSection({ refreshKey, onMutate }: Props) {
           </tr>
         </thead>
         <tbody>
-          {filtered.length === 0 && (
+          {filtered.length === 0 && !listApi.loading && (
             <tr>
               <td colSpan={5} style={styles.emptyRow}>
-                No restaurants found
+                {filter ? "No restaurants match that filter" : "No restaurants yet \u2014 create one above to get started"}
               </td>
             </tr>
           )}
           {filtered.map((r) => (
-            <tr key={r.id}>
+            <tr key={r.id} data-editing={editingId === r.id || undefined}>
               <td style={styles.td}>{r.id}</td>
               <td style={styles.td}>
                 {editingId === r.id ? (
@@ -183,7 +201,7 @@ export function RestaurantSection({ refreshKey, onMutate }: Props) {
                     aria-label="Edit cuisine"
                   />
                 ) : (
-                  r.cuisine || "—"
+                  r.cuisine || "\u2014"
                 )}
               </td>
               <td style={styles.td}>
@@ -213,23 +231,15 @@ export function RestaurantSection({ refreshKey, onMutate }: Props) {
                       </button>
                       <button
                         onClick={() => handleDelete(r.id)}
-                        style={styles.btnDangerSmall}
+                        style={confirmDelete === r.id ? styles.btnDanger : styles.btnDangerSmall}
                       >
-                        Delete
+                        {confirmDelete === r.id ? "Confirm?" : "Delete"}
                       </button>
                     </>
                   )}
                 </div>
                 {rowError[r.id] && (
-                  <div
-                    style={{
-                      color: "#fca5a5",
-                      fontSize: "12px",
-                      marginTop: "4px",
-                    }}
-                  >
-                    {rowError[r.id]}
-                  </div>
+                  <div style={styles.rowError}>{rowError[r.id]}</div>
                 )}
               </td>
             </tr>

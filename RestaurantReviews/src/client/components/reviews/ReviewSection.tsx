@@ -8,6 +8,17 @@ interface Props {
   onMutate: () => void;
 }
 
+const STAR = "\u2605";
+
+function Stars({ n }: { n: number }) {
+  return (
+    <span style={{ color: "#fbbf24", letterSpacing: "1px" }}>
+      {STAR.repeat(n)}
+      <span style={{ color: "#334155" }}>{STAR.repeat(5 - n)}</span>
+    </span>
+  );
+}
+
 export function ReviewSection({ refreshKey, onMutate }: Props) {
   const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedRestaurantId, setSelectedRestaurantId] = useState("");
@@ -16,6 +27,7 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editRating, setEditRating] = useState("");
   const [editBody, setEditBody] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
 
   const usersApi = useApi<User[]>();
   const restaurantsApi = useApi<Restaurant[]>();
@@ -54,6 +66,7 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
     setEditingId(review.id);
     setEditRating(String(review.rating));
     setEditBody(review.body);
+    setConfirmDelete(null);
   };
 
   const cancelEdit = () => {
@@ -76,6 +89,11 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
   };
 
   const handleDelete = async (id: number) => {
+    if (confirmDelete !== id) {
+      setConfirmDelete(id);
+      return;
+    }
+    setConfirmDelete(null);
     await deleteApi.call(`/api/reviews/${id}`, { method: "DELETE" });
     onMutate();
   };
@@ -121,11 +139,11 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
           aria-label="Select rating"
         >
           <option value="">Rating...</option>
-          {[1, 2, 3, 4, 5].map((n) => (
-            <option key={n} value={n}>
-              {n}
-            </option>
-          ))}
+          <option value="1">1 — Poor</option>
+          <option value="2">2 — Fair</option>
+          <option value="3">3 — Good</option>
+          <option value="4">4 — Great</option>
+          <option value="5">5 — Excellent</option>
         </select>
         <textarea
           value={body}
@@ -145,6 +163,10 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
       {updateApi.error && <div style={styles.error}>{updateApi.error}</div>}
       {deleteApi.error && <div style={styles.error}>{deleteApi.error}</div>}
 
+      {listApi.loading && !listApi.data && (
+        <div style={{ color: "#64748b", fontSize: "13px", padding: "16px 0" }}>Loading reviews...</div>
+      )}
+
       <table style={styles.table}>
         <thead>
           <tr>
@@ -157,15 +179,15 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
           </tr>
         </thead>
         <tbody>
-          {reviews.length === 0 && (
+          {reviews.length === 0 && !listApi.loading && (
             <tr>
               <td colSpan={6} style={styles.emptyRow}>
-                No reviews yet
+                No reviews yet &mdash; select a user and restaurant above to create one
               </td>
             </tr>
           )}
           {reviews.map((r) => (
-            <tr key={r.id}>
+            <tr key={r.id} data-editing={editingId === r.id || undefined}>
               <td style={styles.td}>{r.id}</td>
               <td style={styles.td}>{r.user_name}</td>
               <td style={styles.td}>{r.restaurant_name}</td>
@@ -184,7 +206,7 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
                     ))}
                   </select>
                 ) : (
-                  r.rating
+                  <Stars n={r.rating} />
                 )}
               </td>
               <td style={styles.td}>
@@ -196,7 +218,7 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
                     aria-label="Edit body"
                   />
                 ) : (
-                  r.body || "—"
+                  r.body || "\u2014"
                 )}
               </td>
               <td style={styles.td}>
@@ -226,9 +248,9 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
                       </button>
                       <button
                         onClick={() => handleDelete(r.id)}
-                        style={styles.btnDangerSmall}
+                        style={confirmDelete === r.id ? styles.btnDanger : styles.btnDangerSmall}
                       >
-                        Delete
+                        {confirmDelete === r.id ? "Confirm?" : "Delete"}
                       </button>
                     </>
                   )}

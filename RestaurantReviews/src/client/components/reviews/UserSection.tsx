@@ -15,6 +15,7 @@ export function UserSection({ refreshKey, onMutate }: Props) {
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
   const [rowError, setRowError] = useState<Record<number, string>>({});
+  const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
 
   const listApi = useApi<User[]>();
   const createApi = useApi<User>();
@@ -43,6 +44,7 @@ export function UserSection({ refreshKey, onMutate }: Props) {
     setEditingId(user.id);
     setEditName(user.name);
     setEditEmail(user.email);
+    setConfirmDelete(null);
   };
 
   const cancelEdit = () => {
@@ -74,7 +76,12 @@ export function UserSection({ refreshKey, onMutate }: Props) {
   };
 
   const handleDelete = async (id: number) => {
+    if (confirmDelete !== id) {
+      setConfirmDelete(id);
+      return;
+    }
     setRowError((prev) => ({ ...prev, [id]: "" }));
+    setConfirmDelete(null);
     const res = await fetch(`/api/users/${id}`, { method: "DELETE" });
     if (res.status === 204) {
       onMutate();
@@ -116,6 +123,10 @@ export function UserSection({ refreshKey, onMutate }: Props) {
       {createApi.error && <div style={styles.error}>{createApi.error}</div>}
       {updateApi.error && <div style={styles.error}>{updateApi.error}</div>}
 
+      {listApi.loading && !listApi.data && (
+        <div style={{ color: "#64748b", fontSize: "13px", padding: "16px 0" }}>Loading users...</div>
+      )}
+
       <table style={styles.table}>
         <thead>
           <tr>
@@ -127,15 +138,15 @@ export function UserSection({ refreshKey, onMutate }: Props) {
           </tr>
         </thead>
         <tbody>
-          {users.length === 0 && (
+          {users.length === 0 && !listApi.loading && (
             <tr>
               <td colSpan={5} style={styles.emptyRow}>
-                No users yet
+                No users yet &mdash; create one above to get started
               </td>
             </tr>
           )}
           {users.map((u) => (
-            <tr key={u.id}>
+            <tr key={u.id} data-editing={editingId === u.id || undefined}>
               <td style={styles.td}>{u.id}</td>
               <td style={styles.td}>
                 {editingId === u.id ? (
@@ -165,7 +176,7 @@ export function UserSection({ refreshKey, onMutate }: Props) {
                 <span
                   style={{
                     ...styles.statusBadge,
-                    background: u.blocked ? "#7f1d1d" : "#064e3b",
+                    background: u.blocked ? "rgba(127, 29, 29, 0.5)" : "rgba(6, 78, 59, 0.5)",
                     color: u.blocked ? "#fca5a5" : "#6ee7b7",
                   }}
                 >
@@ -214,23 +225,15 @@ export function UserSection({ refreshKey, onMutate }: Props) {
                       )}
                       <button
                         onClick={() => handleDelete(u.id)}
-                        style={styles.btnDangerSmall}
+                        style={confirmDelete === u.id ? styles.btnDanger : styles.btnDangerSmall}
                       >
-                        Delete
+                        {confirmDelete === u.id ? "Confirm?" : "Delete"}
                       </button>
                     </>
                   )}
                 </div>
                 {rowError[u.id] && (
-                  <div
-                    style={{
-                      color: "#fca5a5",
-                      fontSize: "12px",
-                      marginTop: "4px",
-                    }}
-                  >
-                    {rowError[u.id]}
-                  </div>
+                  <div style={styles.rowError}>{rowError[u.id]}</div>
                 )}
               </td>
             </tr>

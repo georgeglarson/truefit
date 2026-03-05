@@ -41,8 +41,9 @@ input:focus, textarea:focus, select:focus {
 
 /* Tables */
 table { border-spacing: 0; }
-tr { transition: background 0.1s ease; }
-tbody tr:hover { background: rgba(56, 189, 248, 0.04); }
+tr { transition: background 0.15s ease; }
+tbody tr:hover { background: rgba(56, 189, 248, 0.06); }
+tbody tr[data-editing="true"] { background: rgba(56, 189, 248, 0.08); }
 
 /* Smooth scrolling */
 html { scroll-behavior: smooth; }

@@ -193,7 +193,7 @@ describe("ReviewsPanel — user table", () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("No users yet")).toBeInTheDocument();
+      expect(screen.getByText(/No users yet/)).toBeInTheDocument();
     });
   });
 
@@ -303,6 +303,12 @@ describe("ReviewsPanel — user table", () => {
 
     fireEvent.click(screen.getByText("Delete"));
 
+    // Confirm the delete
+    await waitFor(() => {
+      expect(screen.getByText("Confirm?")).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText("Confirm?"));
+
     await waitFor(() => {
       expect(
         screen.getByText("cannot delete user with existing reviews")
@@ -331,7 +337,7 @@ describe("ReviewsPanel — restaurant table", () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("No restaurants found")).toBeInTheDocument();
+      expect(screen.getByText(/No restaurants/)).toBeInTheDocument();
     });
   });
 
@@ -377,9 +383,15 @@ describe("ReviewsPanel — restaurant table", () => {
       return jsonResponse({}, 200);
     });
 
-    // Delete is the second Delete button (first is in user section for empty row)
+    // First click shows confirmation
     const deleteBtns = screen.getAllByText("Delete");
     fireEvent.click(deleteBtns[deleteBtns.length - 1]);
+
+    // Second click confirms
+    await waitFor(() => {
+      expect(screen.getByText("Confirm?")).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText("Confirm?"));
 
     await waitFor(() => {
       expect(
@@ -426,7 +438,7 @@ describe("ReviewsPanel — review table", () => {
     render(<App />);
 
     await waitFor(() => {
-      expect(screen.getByText("No reviews yet")).toBeInTheDocument();
+      expect(screen.getByText(/No reviews yet/)).toBeInTheDocument();
     });
   });
 
@@ -594,8 +606,14 @@ describe("ReviewsPanel — review table", () => {
     const deleteBtns = screen.getAllByText("Delete");
     fireEvent.click(deleteBtns[deleteBtns.length - 1]);
 
+    // Confirm the delete
     await waitFor(() => {
-      expect(screen.getByText("No reviews yet")).toBeInTheDocument();
+      expect(screen.getByText("Confirm?")).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByText("Confirm?"));
+
+    await waitFor(() => {
+      expect(screen.getByText(/No reviews yet/)).toBeInTheDocument();
     });
   });
 });
