@@ -34,7 +34,6 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
   const listApi = useApi<ReviewWithNames[]>();
   const createApi = useApi<ReviewWithNames>();
   const updateApi = useApi<ReviewWithNames>();
-  const deleteApi = useApi<void>();
 
   useEffect(() => {
     listApi.call("/api/reviews");
@@ -94,8 +93,10 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
       return;
     }
     setConfirmDelete(null);
-    await deleteApi.call(`/api/reviews/${id}`, { method: "DELETE" });
-    onMutate();
+    const res = await fetch(`/api/reviews/${id}`, { method: "DELETE" });
+    if (res.status === 204) {
+      onMutate();
+    }
   };
 
   const users = usersApi.data ?? [];
@@ -161,7 +162,6 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
       </div>
       {createApi.error && <div style={styles.error}>{createApi.error}</div>}
       {updateApi.error && <div style={styles.error}>{updateApi.error}</div>}
-      {deleteApi.error && <div style={styles.error}>{deleteApi.error}</div>}
 
       {listApi.loading && !listApi.data && (
         <div style={{ color: "#64748b", fontSize: "13px", padding: "16px 0" }}>Loading reviews...</div>

@@ -95,7 +95,7 @@ function KeyboardViz({ output }: { output: string }) {
   // Restart animation when speed changes while playing
   useEffect(() => {
     if (playing) play();
-  }, [speed]);
+  }, [speed, playing, play]);
 
   // Reset when output changes
   useEffect(() => {
@@ -286,7 +286,7 @@ export function OnScreenKeyboardPanel() {
           cursor movement keeps the algorithm clean and extensible to different keyboard layouts.
         </ContextBox.Section>
         <ContextBox.Section heading="Testing">
-          <Stat>73 tests</Stat> &mdash; covers single characters, full words, phrases with spaces,
+          <Stat>74 tests</Stat> &mdash; covers single characters, full words, phrases with spaces,
           wraparound edge cases, every character on the keyboard, multi-word input, and output format
           verification. Tests validate both the move sequence and final cursor position.
         </ContextBox.Section>

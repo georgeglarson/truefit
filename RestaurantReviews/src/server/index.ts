@@ -2,6 +2,7 @@ import path from "path";
 import express from "express";
 import { createDb, setDb } from "./db/connection.js";
 import { createApp } from "./app.js";
+import { startCleanupTimer } from "./exercises/gilded-rose.js";
 
 const PORT = Number(process.env.PORT) || 3000;
 const DB_PATH = process.env.DB_PATH || "restaurant-reviews.db";
@@ -25,3 +26,5 @@ app.get("*", (_req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
+
+startCleanupTimer().unref();

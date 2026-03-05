@@ -18,6 +18,7 @@ func NewRegistry() *Registry {
 		},
 		byName: map[string]Updater{
 			"Aged Brie": Aged{},
+			"Aged Milk": Aged{},
 		},
 		fallback: Normal{},
 	}

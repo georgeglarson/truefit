@@ -8,7 +8,7 @@ use rand::SeedableRng;
 use cash_register::currency::{EUR, USD};
 use cash_register::format::{format_breakdown, format_verbose};
 use cash_register::parse::parse_input;
-use cash_register::rules::make_change_for;
+use cash_register::rules::{make_change_for, Strategy};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -53,15 +53,19 @@ fn main() {
     for result in parse_input(&input) {
         match result {
             Ok(transaction) => {
-                let breakdown = make_change_for(&transaction, currency, divisor, &mut rng);
+                let result = make_change_for(&transaction, currency, divisor, &mut rng);
                 if verbose {
-                    let is_random = divisor > 0 && transaction.owed_cents.is_multiple_of(divisor);
                     println!(
                         "{}",
-                        format_verbose(&transaction, &breakdown, currency, is_random)
+                        format_verbose(
+                            &transaction,
+                            &result.breakdown,
+                            currency,
+                            result.strategy == Strategy::Random,
+                        )
                     );
                 } else {
-                    println!("{}", format_breakdown(&breakdown));
+                    println!("{}", format_breakdown(&result.breakdown));
                 }
             }
             Err(e) => {

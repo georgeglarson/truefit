@@ -46,13 +46,13 @@ Interactive commands:
 make test
 ```
 
-75 tests across four packages:
+82 tests across four packages:
 
 | Package | Tests | Coverage |
 |---------|-------|----------|
 | `item` | 4 | IsTrash, String format |
-| `parser` | 11 | Valid/invalid input, whitespace, blank lines, error messages, full inventory |
-| `updater` | 38 | Every category (Normal, Aged, Sulfuras, Backstage, Conjured), boundary conditions, quality clamping, registry dispatch, name vs category priority |
+| `parser` | 16 | Valid/invalid input, whitespace, blank lines, error messages, full inventory, CSV quoting, quality validation |
+| `updater` | 41 | Every category (Normal, Aged, Sulfuras, Backstage, Conjured), boundary conditions, quality clamping, registry dispatch, name vs category priority, Aged Milk |
 | `inventory` | 22 | CRUD operations, copy semantics, day progression, multi-day simulations, trash detection, **100-day invariant checks** (quality never negative, never > 50 except Sulfuras) |
 
 ## Design Considerations

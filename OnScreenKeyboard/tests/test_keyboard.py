@@ -108,3 +108,7 @@ class TestBuildIndex:
     def test_single_char_layout(self):
         idx = build_index(["Q"])
         assert idx == {"Q": (0, 0)}
+
+    def test_duplicate_characters_raises(self):
+        with pytest.raises(ValueError, match="duplicate character"):
+            build_index(["AA", "BC"])

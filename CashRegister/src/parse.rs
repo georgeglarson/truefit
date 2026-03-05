@@ -24,9 +24,14 @@ pub fn parse_dollars_to_cents(s: &str) -> Result<u32, String> {
             let dollars: u32 = s
                 .parse()
                 .map_err(|_| format!("not a valid number: \"{s}\""))?;
-            Ok(dollars * 100)
+            dollars
+                .checked_mul(100)
+                .ok_or_else(|| format!("amount too large: \"{s}\""))
         }
         Some((dollars_str, cents_str)) => {
+            if cents_str.is_empty() {
+                return Err(format!("missing cents after decimal point: \"{s}\""));
+            }
             if cents_str.len() > 2 {
                 return Err(format!("too many decimal places: \"{s}\""));
             }
@@ -46,7 +51,10 @@ pub fn parse_dollars_to_cents(s: &str) -> Result<u32, String> {
                 .parse()
                 .map_err(|_| format!("invalid cents part: \"{s}\""))?;
 
-            Ok(dollars * 100 + cents)
+            dollars
+                .checked_mul(100)
+                .and_then(|d| d.checked_add(cents))
+                .ok_or_else(|| format!("amount too large: \"{s}\""))
         }
     }
 }
@@ -144,6 +152,34 @@ mod tests {
     fn parse_rejects_non_numeric() {
         assert!(parse_dollars_to_cents("abc").is_err());
         assert!(parse_dollars_to_cents("1.ab").is_err());
+    }
+
+    #[test]
+    fn parse_rejects_trailing_decimal() {
+        let err = parse_dollars_to_cents("3.").unwrap_err();
+        assert!(err.contains("missing cents after decimal point"), "got: {err}");
+    }
+
+    #[test]
+    fn parse_rejects_leading_dot() {
+        assert!(parse_dollars_to_cents(".50").is_err());
+    }
+
+    #[test]
+    fn parse_rejects_multiple_decimals() {
+        assert!(parse_dollars_to_cents("1.2.3").is_err());
+    }
+
+    #[test]
+    fn parse_rejects_overflow() {
+        let err = parse_dollars_to_cents("42949673").unwrap_err();
+        assert!(err.contains("too large"), "got: {err}");
+    }
+
+    #[test]
+    fn parse_rejects_overflow_with_cents() {
+        let err = parse_dollars_to_cents("42949672.96").unwrap_err();
+        assert!(err.contains("too large"), "got: {err}");
     }
 
     #[test]

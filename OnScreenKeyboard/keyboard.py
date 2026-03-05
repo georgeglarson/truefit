@@ -15,5 +15,10 @@ def build_index(layout: list[str]) -> dict[str, tuple[int, int]]:
     index = {}
     for row, line in enumerate(layout):
         for col, char in enumerate(line):
+            if char in index:
+                raise ValueError(
+                    f"duplicate character {char!r} at ({row}, {col}) "
+                    f"and {index[char]}"
+                )
             index[char] = (row, col)
     return index

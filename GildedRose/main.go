@@ -81,6 +81,10 @@ func repl(inv *inventory.Inventory) {
 			fmt.Printf("  Unknown command: %q. Type 'help' for options.\n", input)
 		}
 	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error reading input: %v\n", err)
+	}
 }
 
 func printHelp() {

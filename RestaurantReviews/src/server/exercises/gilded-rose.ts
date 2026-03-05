@@ -35,15 +35,17 @@ function cleanupSession(id: string): void {
   sessions.delete(id);
 }
 
-// Periodic cleanup of idle sessions
-setInterval(() => {
-  const now = Date.now();
-  for (const [id, session] of sessions) {
-    if (now - session.lastActivity > SESSION_TTL) {
-      cleanupSession(id);
+// Periodic cleanup of idle sessions — call from server startup, not at import time.
+export function startCleanupTimer(): ReturnType<typeof setInterval> {
+  return setInterval(() => {
+    const now = Date.now();
+    for (const [id, session] of sessions) {
+      if (now - session.lastActivity > SESSION_TTL) {
+        cleanupSession(id);
+      }
     }
-  }
-}, 60_000).unref();
+  }, 60_000);
+}
 
 async function createSession(inventory: string): Promise<string> {
   const id = crypto.randomUUID();
@@ -91,13 +93,13 @@ async function createSession(inventory: string): Promise<string> {
 }
 
 function drainBuffer(session: Session): void {
-  const match = session.buffer.match(PROMPT_RE);
-  if (match && session.pending.length > 0) {
+  let match: RegExpMatchArray | null;
+  while ((match = session.buffer.match(PROMPT_RE)) && session.pending.length > 0) {
     const day = parseInt(match[1], 10);
     session.day = day;
     // Everything before the prompt is the output
     const output = session.buffer.slice(0, match.index).trimEnd();
-    session.buffer = "";
+    session.buffer = session.buffer.slice(match.index! + match[0].length);
     session.pending.shift()!.resolve(output);
   }
 }
@@ -130,7 +132,16 @@ function sendCommand(session: Session, command: string): Promise<string> {
   // Strip newlines to prevent multi-command injection
   const sanitized = command.replace(/[\r\n]/g, "");
   const promise = waitForPrompt(session);
-  session.process.stdin!.write(sanitized + "\n");
+  try {
+    session.process.stdin!.write(sanitized + "\n");
+  } catch (err) {
+    // stdin may be closed if the process exited
+    if (session.pending.length > 0) {
+      session.pending.shift()!.reject(
+        err instanceof Error ? err : new Error(String(err))
+      );
+    }
+  }
   return promise;
 }
 
@@ -192,14 +203,18 @@ export function gildedRoseRouter(): Router {
     }
   });
 
-  router.delete("/:sessionId", (req, res) => {
-    const { sessionId } = req.params;
-    if (!sessions.has(sessionId)) {
-      res.status(404).json({ error: "session not found" });
-      return;
+  router.delete("/:sessionId", (req, res, next) => {
+    try {
+      const { sessionId } = req.params;
+      if (!sessions.has(sessionId)) {
+        res.status(404).json({ error: "session not found" });
+        return;
+      }
+      cleanupSession(sessionId);
+      res.status(204).send();
+    } catch (err) {
+      next(err);
     }
-    cleanupSession(sessionId);
-    res.status(204).send();
   });
 
   return router;

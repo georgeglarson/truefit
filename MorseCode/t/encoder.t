@@ -88,6 +88,21 @@ for my $phrase (@phrases) {
     is($decoded, $phrase, "round-trip phrase: '$phrase'");
 }
 
+# --- Whitespace handling ---
+
+is(MorseEncoder::encode_line('  hello'), '....||.||.-..||.-..||---',
+   'leading whitespace is ignored');
+
+is(MorseEncoder::encode_line('hello  '), '....||.||.-..||.-..||---',
+   'trailing whitespace is ignored');
+
+is(MorseEncoder::encode_line('hello  world'),
+   '....||.||.-..||.-..||---||||.--||---||.-.||.-..||-..', 'multiple internal spaces treated as single word boundary');
+
+# --- Empty input ---
+
+is(MorseEncoder::encode_line(''), '', 'empty string encodes to empty string');
+
 # --- Error: unencodable character ---
 
 eval { MorseEncoder::encode_line('hello!') };

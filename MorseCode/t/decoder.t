@@ -102,6 +102,10 @@ for my $digit ('0'..'9') {
        "round-trip decode: '$digit'");
 }
 
+# --- Empty input ---
+
+is(MorseDecoder::decode_line(''), '', 'empty string decodes to empty string');
+
 # --- Error: unknown sequence ---
 
 eval { MorseDecoder::decode_line('.-.-.-.-.-') };

@@ -4,9 +4,7 @@ let db: Database.Database | null = null;
 
 export function getDb(): Database.Database {
   if (!db) {
-    db = new Database("restaurant-reviews.db");
-    db.pragma("journal_mode = WAL");
-    db.pragma("foreign_keys = ON");
+    throw new Error("Database not initialized — call setDb() first");
   }
   return db;
 }

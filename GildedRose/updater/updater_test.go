@@ -62,6 +62,13 @@ func TestNormal_sellInGoesNegative(t *testing.T) {
 	}
 }
 
+func TestNormal_alreadyPastSellBy_qualityClamped(t *testing.T) {
+	i := applyUpdate(Normal{}, -1, 1)
+	if i.Quality != 0 {
+		t.Errorf("expected quality 0 (clamped from -1), got %d", i.Quality)
+	}
+}
+
 func TestNormal_multipleUpdates(t *testing.T) {
 	itm := item.Item{Name: "Test", Category: "Test", SellIn: 2, Quality: 10}
 	u := Normal{}
@@ -195,6 +202,13 @@ func TestBackstage_qualityStaysZero_wellAfterConcert(t *testing.T) {
 	}
 }
 
+func TestBackstage_qualityDropsToZero_alreadyPastConcertWithQuality(t *testing.T) {
+	i := applyUpdate(Backstage{}, -5, 30)
+	if i.Quality != 0 {
+		t.Errorf("expected quality 0 (past concert), got %d", i.Quality)
+	}
+}
+
 func TestBackstage_qualityCapsAt50(t *testing.T) {
 	i := applyUpdate(Backstage{}, 5, 49)
 	if i.Quality != 50 {
@@ -305,6 +319,14 @@ func TestRegistry_returnsAgedForAgedBrieByName(t *testing.T) {
 	u := reg.Get("Aged Brie", "Food")
 	if _, ok := u.(Aged); !ok {
 		t.Error("expected Aged updater for Aged Brie")
+	}
+}
+
+func TestRegistry_returnsAgedForAgedMilkByName(t *testing.T) {
+	reg := NewRegistry()
+	u := reg.Get("Aged Milk", "Food")
+	if _, ok := u.(Aged); !ok {
+		t.Error("expected Aged updater for Aged Milk")
 	}
 }
 

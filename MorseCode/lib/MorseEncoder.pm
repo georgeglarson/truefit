@@ -9,7 +9,7 @@ use MorseAlphabet;
 sub encode_line {
     my ($text) = @_;
 
-    my @words = split /\s+/, $text;
+    my @words = split ' ', $text;
 
     my @encoded_words;
     for my $word (@words) {

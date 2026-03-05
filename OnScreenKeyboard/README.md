@@ -13,7 +13,7 @@ keyboard.py          # Layout definition + coordinate indexing
 navigator.py         # Cursor movement + path scripting
 main.py              # CLI driver: file I/O only
 tests/
-  test_keyboard.py   # 23 tests: layout structure, coordinate mapping, custom layouts
+  test_keyboard.py   # 24 tests: layout structure, coordinate mapping, custom layouts, duplicate detection
   test_navigator.py  # 50 tests: movement, paths, spaces, edges, errors, custom layouts
 ```
 
@@ -32,7 +32,7 @@ python3 main.py input.txt
 make test
 ```
 
-73 tests covering the sample input, every letter and digit individually, all four corners, diagonal traversals, space handling (leading/trailing/multiple/cursor preservation), case insensitivity, repeated characters, mixed alpha-numeric, manhattan distance correctness verification, custom layout support, empty input, and error paths for invalid characters.
+74 tests covering the sample input, every letter and digit individually, all four corners, diagonal traversals, space handling (leading/trailing/multiple/cursor preservation), case insensitivity, repeated characters, mixed alpha-numeric, manhattan distance correctness verification, custom layout support, empty input, and error paths for invalid characters.
 
 ## Design Considerations
 

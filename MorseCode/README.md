@@ -15,8 +15,8 @@ lib/
   MorseEncoder.pm    # English → Morse: text splitting + alphabet lookup
 t/
   alphabet.t         # 78 tests: encode/decode every letter & digit, edge cases
-  decoder.t          # 56 tests: samples, round-trips, multi-word, error handling
-  encoder.t          # 61 tests: samples, round-trips, case handling, error paths
+  decoder.t          # 57 tests: samples, round-trips, multi-word, error handling
+  encoder.t          # 65 tests: samples, round-trips, case handling, whitespace, error paths
 morse_decode         # CLI: Morse → English
 morse_encode         # CLI: English → Morse
 ```
@@ -38,7 +38,7 @@ echo "hello world" | ./morse_encode /dev/stdin | ./morse_decode /dev/stdin
 make test
 ```
 
-195 tests across three suites covering every character in the Morse alphabet, bidirectional round-trip encode/decode for all 36 characters, multi-word phrases, a full pangram, numeric strings, mixed alpha-numeric input, case insensitivity, delimiter structure, and error paths for invalid input.
+200 tests across three suites covering every character in the Morse alphabet, bidirectional round-trip encode/decode for all 36 characters, multi-word phrases, a full pangram, numeric strings, mixed alpha-numeric input, case insensitivity, delimiter structure, and error paths for invalid input.
 
 ## Design Considerations
 

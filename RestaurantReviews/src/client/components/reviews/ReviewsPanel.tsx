@@ -31,7 +31,7 @@ export function ReviewsPanel() {
           other exercises as live, interactive demos.
         </ContextBox.Section>
         <ContextBox.Section heading="Testing">
-          <Stat>277 tests</Stat> &mdash; 46 model tests (CRUD operations,
+          <Stat>278 tests</Stat> &mdash; 46 model tests (CRUD operations,
           FK constraints, email uniqueness), 103 API route tests (all HTTP verbs, validation, 404/409
           error paths), and 128 client tests (rendering, inline edit flows, entity pickers,
           cross-section refresh, and all exercise panel integration).

@@ -21,7 +21,7 @@ make run
 make test
 ```
 
-46 tests across three modules (solver, parser, orchestration) covering happy paths, edge cases, error paths, negative numbers, large ranges, and input format variations.
+53 tests across three modules (solver, parser, orchestration) covering happy paths, edge cases, error paths, negative numbers, large ranges, input format variations, overflow detection, duplicate detection, and input validation.
 
 ## Design Considerations
 

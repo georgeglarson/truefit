@@ -43,7 +43,7 @@ export function MorseCodePanel() {
           decoder from a single authoritative lookup table.
         </ContextBox.Section>
         <ContextBox.Section heading="Testing">
-          <Stat>195 tests</Stat> &mdash; covers every letter A&ndash;Z,
+          <Stat>200 tests</Stat> &mdash; covers every letter A&ndash;Z,
           digits 0&ndash;9, all supported punctuation, multi-word encoding/decoding, full round-trip
           verification (encode then decode returns original), edge cases like empty input,
           unknown characters, and malformed Morse sequences.

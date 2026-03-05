@@ -25,7 +25,7 @@ export function CashRegisterPanel() {
           addition.
         </ContextBox.Section>
         <ContextBox.Section heading="Testing">
-          <Stat>74 tests</Stat> &mdash; covers exact change, overpayment with every denomination,
+          <Stat>79 tests</Stat> &mdash; covers exact change, overpayment with every denomination,
           the divisible-by-3 randomization path, penny-level precision, large amounts, zero-change
           edge cases, and round-trip verification that computed change always sums back to the
           correct amount.

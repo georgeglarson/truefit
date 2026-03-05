@@ -117,8 +117,8 @@ Pass `--currency EUR`. The EUR denomination table is already defined and wired i
 ## Testing
 
 ```bash
-cargo test                    # All 74 tests: unit + integration + property-based
-cargo test --lib              # Unit tests only (48 tests)
+cargo test                    # All 79 tests: unit + integration + property-based
+cargo test --lib              # Unit tests only (53 tests)
 cargo test --test integration # Integration tests only (18 tests)
 cargo test --test proptest    # Property-based tests only (8 tests)
 ```

@@ -4,9 +4,17 @@ const testing = std.testing;
 pub const solver = @import("solver.zig");
 pub const parser = @import("parser.zig");
 
+pub const ProcessError = error{
+    EmptyInput,
+    InvalidInput,
+    Overflow,
+    InvalidCharacter,
+    OutOfMemory,
+};
+
 /// Processes an entire input buffer, returning the missing number for each line.
 /// Caller owns the returned memory.
-pub fn processInput(allocator: std.mem.Allocator, input: []const u8) ![]i64 {
+pub fn processInput(allocator: std.mem.Allocator, input: []const u8) ProcessError![]i64 {
     var results = std.ArrayList(i64).init(allocator);
     errdefer results.deinit();
 
@@ -18,7 +26,7 @@ pub fn processInput(allocator: std.mem.Allocator, input: []const u8) ![]i64 {
         const numbers = try parser.parseLine(allocator, trimmed);
         defer allocator.free(numbers);
 
-        try results.append(solver.findMissing(numbers));
+        try results.append(try solver.findMissing(numbers));
     }
 
     return results.toOwnedSlice();
@@ -103,6 +111,21 @@ test "processInput: windows-style line endings (CRLF)" {
     try testing.expectEqual(@as(usize, 2), results.len);
     try testing.expectEqual(@as(i64, 3), results[0]);
     try testing.expectEqual(@as(i64, 12), results[1]);
+}
+
+test "processInput: line with only commas returns EmptyInput" {
+    const result = processInput(testing.allocator, ",,,");
+    try testing.expectError(error.EmptyInput, result);
+}
+
+test "processInput: duplicate values returns InvalidInput" {
+    const result = processInput(testing.allocator, "1,2,2,4");
+    try testing.expectError(error.InvalidInput, result);
+}
+
+test "processInput: multiple missing returns InvalidInput" {
+    const result = processInput(testing.allocator, "1,5");
+    try testing.expectError(error.InvalidInput, result);
 }
 
 // Pull in tests from submodules so `zig build test` runs them all.

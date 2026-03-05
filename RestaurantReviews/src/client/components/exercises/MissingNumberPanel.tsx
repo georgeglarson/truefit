@@ -22,7 +22,7 @@ export function MissingNumberPanel() {
           then uses arithmetic sum comparison to pinpoint the missing value in O(n log n) time.
         </ContextBox.Section>
         <ContextBox.Section heading="Testing">
-          <Stat>46 tests</Stat> &mdash; covers step sizes of 1 through 5, unsorted input, negative
+          <Stat>53 tests</Stat> &mdash; covers step sizes of 1 through 5, unsorted input, negative
           numbers, missing first/last elements, two-element sequences, large sequences (1000+
           elements), and malformed input rejection. Uses a custom test runner for verbose per-test
           output.

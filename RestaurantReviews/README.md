@@ -12,7 +12,7 @@ A full-stack TypeScript/React application that implements the RestaurantReviews 
 ## Quick Start
 
 ```sh
-make test    # 97 tests (server + client)
+make test    # 278 tests (server + client)
 make run     # starts Express on http://localhost:3000
 ```
 

@@ -5,6 +5,22 @@ import (
 	"testing"
 )
 
+// --- CSV quoting support ---
+
+func TestParse_quotedNameWithComma(t *testing.T) {
+	input := `"Sulfuras, Hand of Ragnaros",Sulfuras,80,80` + "\n"
+	items, err := Parse(strings.NewReader(input))
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if len(items) != 1 {
+		t.Fatalf("expected 1 item, got %d", len(items))
+	}
+	if items[0].Name != "Sulfuras, Hand of Ragnaros" {
+		t.Errorf("expected quoted name, got %q", items[0].Name)
+	}
+}
+
 func TestParse_validInput(t *testing.T) {
 	input := "Sword,Weapon,30,50\nAxe,Weapon,40,50\n"
 	items, err := Parse(strings.NewReader(input))
@@ -114,6 +130,46 @@ func TestParse_nameWithSpecialChars(t *testing.T) {
 	}
 	if items[0].Name != "+5 Dexterity Vest" {
 		t.Errorf("expected name '+5 Dexterity Vest', got %q", items[0].Name)
+	}
+}
+
+// --- Quality validation ---
+
+func TestParse_rejectsQualityAbove50(t *testing.T) {
+	input := "Sword,Weapon,10,51\n"
+	_, err := Parse(strings.NewReader(input))
+	if err == nil {
+		t.Fatal("expected error for quality > 50")
+	}
+	if !strings.Contains(err.Error(), "out of range") {
+		t.Errorf("expected out of range error, got: %v", err)
+	}
+}
+
+func TestParse_rejectsNegativeQuality(t *testing.T) {
+	input := "Sword,Weapon,10,-1\n"
+	_, err := Parse(strings.NewReader(input))
+	if err == nil {
+		t.Fatal("expected error for quality < 0")
+	}
+}
+
+func TestParse_acceptsLegendaryQuality80(t *testing.T) {
+	input := "Hand of Ragnaros,Sulfuras,80,80\n"
+	items, err := Parse(strings.NewReader(input))
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if items[0].Quality != 80 {
+		t.Errorf("expected quality 80, got %d", items[0].Quality)
+	}
+}
+
+func TestParse_rejectsLegendaryQualityNot80(t *testing.T) {
+	input := "Hand of Ragnaros,Sulfuras,80,50\n"
+	_, err := Parse(strings.NewReader(input))
+	if err == nil {
+		t.Fatal("expected error for legendary item with quality != 80")
 	}
 }
 

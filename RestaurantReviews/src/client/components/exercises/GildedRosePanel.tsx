@@ -135,7 +135,7 @@ export function GildedRosePanel() {
     setDay(0);
   };
 
-  const qualityMax = items.some((i) => i.category === "Legendary") ? 80 : 50;
+  const qualityMaxFor = (category: string) => category === "Legendary" ? 80 : 50;
 
   return (
     <div style={s.panel}>
@@ -159,7 +159,7 @@ export function GildedRosePanel() {
           clean design without hiding behind language features.
         </ContextBox.Section>
         <ContextBox.Section heading="Testing">
-          <Stat>75 tests</Stat> &mdash; covers all 5 category rules
+          <Stat>82 tests</Stat> &mdash; covers all 5 category rules
           (Normal, Aged, Legendary, BackstagePass, Conjured), boundary conditions at Quality 0 and 50,
           SellIn expiration behavior, multi-day progression, and edge cases like negative SellIn values.
         </ContextBox.Section>
@@ -232,7 +232,7 @@ export function GildedRosePanel() {
                 const expired = item.sellIn < 0;
                 const dead = item.quality <= 0 && item.category !== "Legendary";
                 return (
-                  <tr key={item.name} style={dead ? { opacity: 0.4 } : undefined}>
+                  <tr key={`${item.name}-${i}`} style={dead ? { opacity: 0.4 } : undefined}>
                     <td style={s.td}>
                       <span style={dead ? { textDecoration: "line-through" } : undefined}>
                         {item.name}
@@ -245,7 +245,7 @@ export function GildedRosePanel() {
                       </span>
                     </td>
                     <td style={s.td}>
-                      <QualityBar quality={item.quality} max={qualityMax} />
+                      <QualityBar quality={item.quality} max={qualityMaxFor(item.category)} />
                     </td>
                     <td style={{ ...s.td, textAlign: "center" }}>
                       {prev ? <Delta prev={prev.quality} curr={item.quality} /> : <span style={{ color: "#475569" }}>&mdash;</span>}
