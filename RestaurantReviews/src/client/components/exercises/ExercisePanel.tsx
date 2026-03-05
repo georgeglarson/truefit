@@ -20,6 +20,7 @@ export function ExercisePanel({
   defaultValue = "",
   method = "POST",
   buildBody = (input) => ({ input }),
+  children,
 }: Props) {
   const [input, setInput] = useState(defaultValue);
   const { data, error, loading, call } = useApi<{ output: string }>();
@@ -36,6 +37,8 @@ export function ExercisePanel({
     <div style={styles.panel}>
       <h2 style={styles.title}>{title}</h2>
       <p style={styles.desc}>{description}</p>
+
+      {children}
 
       <textarea
         value={input}

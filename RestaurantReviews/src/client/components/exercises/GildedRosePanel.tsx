@@ -70,6 +70,28 @@ export function GildedRosePanel() {
         days to watch the rules play out.
       </p>
 
+      <div style={styles.contextBox}>
+        <div style={styles.contextHeading}>The Challenge</div>
+        <p style={styles.contextText}>
+          Implement a system where shop inventory items degrade (or improve) in Quality
+          each day according to category-specific rules &mdash; a classic polymorphism and
+          business logic problem with 5 distinct item behaviors.
+        </p>
+        <div style={styles.contextHeading}>Our Solution</div>
+        <p style={styles.contextText}>
+          <strong style={styles.contextLang}>Go</strong> &mdash; Go's interface system is a natural fit.
+          Each item category implements a single <code style={styles.code}>Updater</code> interface, and a
+          registry pattern makes adding new item rules a one-file addition. Go's simplicity forces
+          clean design without hiding behind language features.
+        </p>
+        <div style={styles.contextHeading}>Testing</div>
+        <p style={styles.contextText}>
+          <strong style={styles.contextStat}>75 tests</strong> &mdash; covers all 5 category rules
+          (Normal, Aged, Legendary, BackstagePass, Conjured), boundary conditions at Quality 0 and 50,
+          SellIn expiration behavior, multi-day progression, and edge cases like negative SellIn values.
+        </p>
+      </div>
+
       {!sessionId ? (
         <>
           <div style={styles.rulesBox}>
@@ -156,6 +178,28 @@ const styles = {
   panel: { padding: "24px", maxWidth: "800px" },
   title: { fontSize: "24px", marginBottom: "8px", color: "#f1f5f9" },
   desc: { color: "#94a3b8", marginBottom: "16px", fontSize: "14px" },
+  contextBox: {
+    padding: "12px 16px",
+    background: "#1e293b",
+    border: "1px solid #334155",
+    borderRadius: "6px",
+    marginBottom: "16px",
+    fontSize: "13px",
+    color: "#cbd5e1",
+    lineHeight: "1.6",
+  },
+  contextHeading: {
+    fontSize: "13px",
+    fontWeight: 600,
+    color: "#94a3b8",
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.05em",
+    marginBottom: "4px",
+    marginTop: "8px",
+  },
+  contextText: { margin: "0 0 8px 0" } as const,
+  contextLang: { color: "#38bdf8" },
+  contextStat: { color: "#4ade80" },
   rulesBox: {
     padding: "12px 16px",
     background: "#1e293b",
