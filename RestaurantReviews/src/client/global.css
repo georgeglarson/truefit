@@ -54,3 +54,6 @@ pre::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
 /* Links */
 a { color: #38bdf8; text-decoration: none; }
 a:hover { text-decoration: underline; }
+
+/* Blinking cursor for keyboard viz */
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
