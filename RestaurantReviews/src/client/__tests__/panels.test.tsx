@@ -482,7 +482,7 @@ describe("ReviewsPanel — review table", () => {
     await userEvent.selectOptions(screen.getByLabelText("Select user"), "1");
     await userEvent.selectOptions(screen.getByLabelText("Select restaurant"), "1");
     await userEvent.selectOptions(screen.getByLabelText("Select rating"), "5");
-    await userEvent.type(screen.getByPlaceholderText("Review text (optional)"), "Wonderful!");
+    await userEvent.type(screen.getByPlaceholderText("Comment (optional)"), "Wonderful!");
 
     // Mock create + refresh
     const newReview = {

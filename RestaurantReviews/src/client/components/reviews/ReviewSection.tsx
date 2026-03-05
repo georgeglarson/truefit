@@ -148,7 +148,7 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
         <textarea
           value={body}
           onChange={(e) => setBody(e.target.value)}
-          placeholder="Review text (optional)"
+          placeholder="Comment (optional)"
           style={{ ...styles.input, minHeight: "36px", flex: 1 }}
         />
         <button
@@ -174,7 +174,7 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
             <th style={styles.th}>User</th>
             <th style={styles.th}>Restaurant</th>
             <th style={styles.th}>Rating</th>
-            <th style={styles.th}>Body</th>
+            <th style={styles.th}>Comment</th>
             <th style={styles.th}>Actions</th>
           </tr>
         </thead>
@@ -215,7 +215,7 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
                     value={editBody}
                     onChange={(e) => setEditBody(e.target.value)}
                     style={styles.editInput}
-                    aria-label="Edit body"
+                    aria-label="Edit comment"
                   />
                 ) : (
                   r.body || "\u2014"
