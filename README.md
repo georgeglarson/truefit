@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/georgeglarson/truefit/actions/workflows/ci.yml/badge.svg)](https://github.com/georgeglarson/truefit/actions/workflows/ci.yml)
 
-Solutions to TrueFit's coding challenges. Each exercise is implemented in a different language, chosen to match the problem domain.
+**[Live Demo](https://truefit.georgelarson.me)** | Solutions to TrueFit's coding challenges. Each exercise is implemented in a different language, chosen to match the problem domain.
 
 ## Exercises
 
