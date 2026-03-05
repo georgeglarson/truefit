@@ -1,6 +1,7 @@
 import { Router } from "express";
 import type Database from "better-sqlite3";
 import { UserModel } from "../models/user.js";
+import { parseId, requireStrings, deleteWithFKCheck } from "./validate.js";
 
 export function usersRouter(db: Database.Database): Router {
   const router = Router();
@@ -16,11 +17,8 @@ export function usersRouter(db: Database.Database): Router {
 
   router.get("/:id", (req, res, next) => {
     try {
-      const id = Number(req.params.id);
-      if (isNaN(id)) {
-        res.status(400).json({ error: "invalid user id" });
-        return;
-      }
+      const id = parseId(req, res, "user");
+      if (id === null) return;
 
       const user = users.findById(id);
       if (!user) {
@@ -36,33 +34,19 @@ export function usersRouter(db: Database.Database): Router {
 
   router.post("/", (req, res, next) => {
     try {
-      const { name, email } = req.body;
+      const fields = requireStrings(res, {
+        name: req.body.name,
+        email: req.body.email,
+      });
+      if (!fields) return;
 
-      if (!name || !email) {
-        res.status(400).json({ error: "name and email are required" });
-        return;
-      }
-
-      if (typeof name !== "string" || typeof email !== "string") {
-        res.status(400).json({ error: "name and email must be strings" });
-        return;
-      }
-
-      const trimmedName = name.trim();
-      const trimmedEmail = email.trim();
-
-      if (!trimmedName || !trimmedEmail) {
-        res.status(400).json({ error: "name and email must not be blank" });
-        return;
-      }
-
-      const existing = users.findByEmail(trimmedEmail);
+      const existing = users.findByEmail(fields.email);
       if (existing) {
         res.status(409).json({ error: "email already exists" });
         return;
       }
 
-      const user = users.create(trimmedName, trimmedEmail);
+      const user = users.create(fields.name, fields.email);
       res.status(201).json(user);
     } catch (err) {
       next(err);
@@ -71,31 +55,14 @@ export function usersRouter(db: Database.Database): Router {
 
   router.put("/:id", (req, res, next) => {
     try {
-      const id = Number(req.params.id);
-      if (isNaN(id)) {
-        res.status(400).json({ error: "invalid user id" });
-        return;
-      }
+      const id = parseId(req, res, "user");
+      if (id === null) return;
 
-      const { name, email } = req.body;
-
-      if (!name || !email) {
-        res.status(400).json({ error: "name and email are required" });
-        return;
-      }
-
-      if (typeof name !== "string" || typeof email !== "string") {
-        res.status(400).json({ error: "name and email must be strings" });
-        return;
-      }
-
-      const trimmedName = name.trim();
-      const trimmedEmail = email.trim();
-
-      if (!trimmedName || !trimmedEmail) {
-        res.status(400).json({ error: "name and email must not be blank" });
-        return;
-      }
+      const fields = requireStrings(res, {
+        name: req.body.name,
+        email: req.body.email,
+      });
+      if (!fields) return;
 
       const existing = users.findById(id);
       if (!existing) {
@@ -103,13 +70,13 @@ export function usersRouter(db: Database.Database): Router {
         return;
       }
 
-      const emailOwner = users.findByEmail(trimmedEmail);
+      const emailOwner = users.findByEmail(fields.email);
       if (emailOwner && emailOwner.id !== id) {
         res.status(409).json({ error: "email already exists" });
         return;
       }
 
-      const user = users.update(id, trimmedName, trimmedEmail);
+      const user = users.update(id, fields.name, fields.email);
       res.json(user);
     } catch (err) {
       next(err);
@@ -118,11 +85,8 @@ export function usersRouter(db: Database.Database): Router {
 
   router.patch("/:id/block", (req, res, next) => {
     try {
-      const id = Number(req.params.id);
-      if (isNaN(id)) {
-        res.status(400).json({ error: "invalid user id" });
-        return;
-      }
+      const id = parseId(req, res, "user");
+      if (id === null) return;
 
       const user = users.block(id);
       if (!user) {
@@ -138,11 +102,8 @@ export function usersRouter(db: Database.Database): Router {
 
   router.patch("/:id/unblock", (req, res, next) => {
     try {
-      const id = Number(req.params.id);
-      if (isNaN(id)) {
-        res.status(400).json({ error: "invalid user id" });
-        return;
-      }
+      const id = parseId(req, res, "user");
+      if (id === null) return;
 
       const user = users.unblock(id);
       if (!user) {
@@ -158,11 +119,8 @@ export function usersRouter(db: Database.Database): Router {
 
   router.delete("/:id", (req, res, next) => {
     try {
-      const id = Number(req.params.id);
-      if (isNaN(id)) {
-        res.status(400).json({ error: "invalid user id" });
-        return;
-      }
+      const id = parseId(req, res, "user");
+      if (id === null) return;
 
       const existing = users.findById(id);
       if (!existing) {
@@ -170,24 +128,11 @@ export function usersRouter(db: Database.Database): Router {
         return;
       }
 
-      try {
-        const deleted = users.deleteById(id);
-        if (!deleted) {
-          res.status(404).json({ error: "user not found" });
-          return;
-        }
-        res.status(204).send();
-      } catch (err: unknown) {
-        const msg =
-          err instanceof Error ? err.message : String(err);
-        if (msg.includes("FOREIGN KEY constraint failed")) {
-          res
-            .status(409)
-            .json({ error: "cannot delete user with existing reviews" });
-          return;
-        }
-        throw err;
-      }
+      deleteWithFKCheck(
+        res,
+        () => users.deleteById(id),
+        "cannot delete user with existing reviews"
+      );
     } catch (err) {
       next(err);
     }

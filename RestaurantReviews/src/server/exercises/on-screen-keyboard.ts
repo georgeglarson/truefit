@@ -14,12 +14,9 @@ export function onScreenKeyboardRouter(): Router {
         return;
       }
 
-      const result = await runWithFile(
-        EXERCISE_PATHS.onScreenKeyboard,
-        input,
-        [],
-        { interpreter: "python3" }
-      );
+      const result = await runWithFile(EXERCISE_PATHS.onScreenKeyboard, input, [], {
+        interpreter: "python3",
+      });
 
       if (result.exitCode !== 0) {
         console.error("on-screen-keyboard stderr:", result.stderr);

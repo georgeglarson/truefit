@@ -137,9 +137,7 @@ function sendCommand(session: Session, command: string): Promise<string> {
   } catch (err) {
     // stdin may be closed if the process exited
     if (session.pending.length > 0) {
-      session.pending.shift()!.reject(
-        err instanceof Error ? err : new Error(String(err))
-      );
+      session.pending.shift()!.reject(err instanceof Error ? err : new Error(String(err)));
     }
   }
   return promise;

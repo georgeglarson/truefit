@@ -8,6 +8,8 @@ interface Props {
   placeholder: string;
   defaultValue?: string;
   method?: string;
+  buttonLabel?: string;
+  loadingLabel?: string;
   buildBody?: (input: string) => Record<string, unknown>;
   children?: ReactNode;
 }
@@ -19,6 +21,8 @@ export function ExercisePanel({
   placeholder,
   defaultValue = "",
   method = "POST",
+  buttonLabel = "Run",
+  loadingLabel = "Running...",
   buildBody = (input) => ({ input }),
   children,
 }: Props) {
@@ -49,14 +53,12 @@ export function ExercisePanel({
       />
 
       <button onClick={handleRun} disabled={loading} style={styles.button}>
-        {loading ? "Running..." : "Run"}
+        {loading ? loadingLabel : buttonLabel}
       </button>
 
       {error && <div style={styles.error}>{error}</div>}
 
-      {data && (
-        <pre style={styles.output}>{data.output}</pre>
-      )}
+      {data && <pre style={styles.output}>{data.output}</pre>}
     </div>
   );
 }

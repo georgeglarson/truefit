@@ -40,7 +40,7 @@ export function createApp(db: Database.Database): express.Express {
       },
     })
   );
-  app.use(cors());
+  app.use(cors({ origin: true }));
   app.use(express.json({ limit: "64kb" }));
   app.use("/api", createApiLimiter());
 

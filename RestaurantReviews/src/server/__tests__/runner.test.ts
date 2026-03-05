@@ -48,30 +48,22 @@ describe("runWithFile", () => {
   });
 
   it("captures stderr on failure", async () => {
-    const result = await runWithFile("/bin/cat", "data\n", [
-      "/nonexistent/file",
-    ]);
+    const result = await runWithFile("/bin/cat", "data\n", ["/nonexistent/file"]);
     expect(result.exitCode).not.toBe(0);
     expect(result.stderr).toBeTruthy();
   });
 
   it("cleans up temp directory after success", async () => {
-    const { mkdtemp } = await import("fs/promises");
     const { tmpdir } = await import("os");
-    const path = await import("path");
     const { readdir } = await import("fs/promises");
 
     // Count exercise- dirs before and after
     const tmpBase = tmpdir();
-    const before = (await readdir(tmpBase)).filter((f) =>
-      f.startsWith("exercise-")
-    ).length;
+    const before = (await readdir(tmpBase)).filter((f) => f.startsWith("exercise-")).length;
 
     await runWithFile("/bin/cat", "cleanup test\n");
 
-    const after = (await readdir(tmpBase)).filter((f) =>
-      f.startsWith("exercise-")
-    ).length;
+    const after = (await readdir(tmpBase)).filter((f) => f.startsWith("exercise-")).length;
 
     // Should not leave extra dirs behind
     expect(after).toBeLessThanOrEqual(before);
@@ -82,15 +74,11 @@ describe("runWithFile", () => {
     const { readdir } = await import("fs/promises");
 
     const tmpBase = tmpdir();
-    const before = (await readdir(tmpBase)).filter((f) =>
-      f.startsWith("exercise-")
-    ).length;
+    const before = (await readdir(tmpBase)).filter((f) => f.startsWith("exercise-")).length;
 
     await runWithFile("/bin/false", "test\n");
 
-    const after = (await readdir(tmpBase)).filter((f) =>
-      f.startsWith("exercise-")
-    ).length;
+    const after = (await readdir(tmpBase)).filter((f) => f.startsWith("exercise-")).length;
 
     expect(after).toBeLessThanOrEqual(before);
   });
@@ -107,10 +95,7 @@ describe("spawnAndCapture", () => {
   });
 
   it("captures stderr", async () => {
-    const result = await spawnAndCapture("/bin/sh", [
-      "-c",
-      "echo err >&2; exit 1",
-    ]);
+    const result = await spawnAndCapture("/bin/sh", ["-c", "echo err >&2; exit 1"]);
     expect(result.exitCode).toBe(1);
     expect(result.stderr.trim()).toBe("err");
   });
@@ -128,16 +113,11 @@ describe("spawnAndCapture", () => {
   });
 
   it("handles command not found", async () => {
-    await expect(
-      spawnAndCapture("/nonexistent/binary", [])
-    ).rejects.toThrow();
+    await expect(spawnAndCapture("/nonexistent/binary", [])).rejects.toThrow();
   });
 
   it("captures multi-line stdout", async () => {
-    const result = await spawnAndCapture("/bin/sh", [
-      "-c",
-      "echo line1; echo line2; echo line3",
-    ]);
+    const result = await spawnAndCapture("/bin/sh", ["-c", "echo line1; echo line2; echo line3"]);
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toBe("line1\nline2\nline3\n");
   });

@@ -29,20 +29,16 @@ function parseItems(text: string): Item[] {
 }
 
 const CAT_COLORS: Record<string, { bg: string; color: string }> = {
-  Normal:        { bg: "rgba(148, 163, 184, 0.15)", color: "#94a3b8" },
-  Aged:          { bg: "rgba(74, 222, 128, 0.15)",  color: "#4ade80" },
-  Legendary:     { bg: "rgba(251, 191, 36, 0.15)",  color: "#fbbf24" },
-  BackstagePass: { bg: "rgba(168, 85, 247, 0.15)",  color: "#a855f7" },
-  Conjured:      { bg: "rgba(248, 113, 113, 0.15)", color: "#f87171" },
+  Normal: { bg: "rgba(148, 163, 184, 0.15)", color: "#94a3b8" },
+  Aged: { bg: "rgba(74, 222, 128, 0.15)", color: "#4ade80" },
+  Legendary: { bg: "rgba(251, 191, 36, 0.15)", color: "#fbbf24" },
+  BackstagePass: { bg: "rgba(168, 85, 247, 0.15)", color: "#a855f7" },
+  Conjured: { bg: "rgba(248, 113, 113, 0.15)", color: "#f87171" },
 };
 
 function CatBadge({ category }: { category: string }) {
   const c = CAT_COLORS[category] ?? CAT_COLORS.Normal;
-  return (
-    <span style={{ ...s.catBadge, background: c.bg, color: c.color }}>
-      {category}
-    </span>
-  );
+  return <span style={{ ...styles.catBadge, background: c.bg, color: c.color }}>{category}</span>;
 }
 
 function QualityBar({ quality, max }: { quality: number; max: number }) {
@@ -52,9 +48,9 @@ function QualityBar({ quality, max }: { quality: number; max: number }) {
   else if (quality <= 10) color = "#f87171";
   else if (quality <= 25) color = "#fbbf24";
   return (
-    <div style={s.qualityBarOuter}>
-      <div style={{ ...s.qualityBarInner, width: `${pct}%`, background: color }} />
-      <span style={s.qualityBarLabel}>{quality}</span>
+    <div style={styles.qualityBarOuter}>
+      <div style={{ ...styles.qualityBarInner, width: `${pct}%`, background: color }} />
+      <span style={styles.qualityBarLabel}>{quality}</span>
     </div>
   );
 }
@@ -64,7 +60,12 @@ function Delta({ prev, curr }: { prev: number; curr: number }) {
   if (diff === 0) return <span style={{ color: "#475569" }}>&mdash;</span>;
   const color = diff > 0 ? "#4ade80" : "#f87171";
   const arrow = diff > 0 ? "\u2191" : "\u2193";
-  return <span style={{ color, fontWeight: 600, fontFamily: "monospace" }}>{arrow}{Math.abs(diff)}</span>;
+  return (
+    <span style={{ color, fontWeight: 600, fontFamily: "monospace" }}>
+      {arrow}
+      {Math.abs(diff)}
+    </span>
+  );
 }
 
 export function GildedRosePanel() {
@@ -135,95 +136,98 @@ export function GildedRosePanel() {
     setDay(0);
   };
 
-  const qualityMaxFor = (category: string) => category === "Legendary" ? 80 : 50;
+  const qualityMaxFor = (category: string) => (category === "Legendary" ? 80 : 50);
 
   return (
-    <div style={s.panel}>
-      <h2 style={s.title}>Gilded Rose</h2>
-      <p style={s.desc}>
-        A shop inventory simulator. Items degrade (or improve) in Quality each
-        day according to category rules. Load an inventory, then advance days
-        to watch the rules play out.
+    <div style={styles.panel}>
+      <h2 style={styles.title}>Gilded Rose</h2>
+      <p style={styles.desc}>
+        A shop inventory simulator. Items degrade (or improve) in Quality each day according to
+        category rules. Load an inventory, then advance days to watch the rules play out.
       </p>
 
       <ContextBox>
         <ContextBox.Section heading="Problem">
-          Implement a system where shop inventory items degrade (or improve) in Quality
-          each day according to category-specific rules &mdash; a classic polymorphism and
-          business logic problem with 5 distinct item behaviors.
+          Implement a system where shop inventory items degrade (or improve) in Quality each day
+          according to category-specific rules &mdash; 5 item types, each with unique aging
+          behavior.
         </ContextBox.Section>
         <ContextBox.Section heading="Solution">
-          <Lang>Go</Lang> &mdash; Go's interface system is a natural fit.
-          Each item category implements a single <Code>Updater</Code> interface, and a
-          registry pattern makes adding new item rules a one-file addition. Go's simplicity forces
-          clean design without hiding behind language features.
+          <Lang>Go</Lang> &mdash; Go's interface system is a natural fit. Each item category
+          implements a single <Code>Updater</Code> interface, and a registry pattern makes adding
+          new item rules a one-file addition. Go's simplicity forces clean design without hiding
+          behind language features.
         </ContextBox.Section>
         <ContextBox.Section heading="Testing">
-          <Stat>82 tests</Stat> &mdash; covers all 5 category rules
-          (Normal, Aged, Legendary, BackstagePass, Conjured), boundary conditions at Quality 0 and 50,
-          SellIn expiration behavior, multi-day progression, and edge cases like negative SellIn values.
+          <Stat>82 tests</Stat> &mdash; covers all 5 category rules (Normal, Aged, Legendary,
+          BackstagePass, Conjured), boundary conditions at Quality 0 and 50, SellIn expiration
+          behavior, multi-day progression, and edge cases like negative SellIn values.
         </ContextBox.Section>
       </ContextBox>
 
       {!sessionId ? (
         <>
-          <div style={s.rulesBox}>
-            <div style={s.rulesTitle}>Category Rules</div>
-            <div style={s.rulesGrid}>
-              <div><CatBadge category="Normal" /> Quality drops by 1/day, doubles after SellIn expires</div>
-              <div><CatBadge category="Aged" /> Quality <em>increases</em> by 1/day (better with age)</div>
-              <div><CatBadge category="Legendary" /> Never sold, never degrades (Quality stays 80)</div>
-              <div><CatBadge category="BackstagePass" /> Quality rises as concert nears: +2 at 10d, +3 at 5d, drops to 0 after</div>
-              <div><CatBadge category="Conjured" /> Degrades twice as fast as Normal items</div>
+          <div style={styles.rulesBox}>
+            <div style={styles.rulesTitle}>Category Rules</div>
+            <div style={styles.rulesGrid}>
+              <div>
+                <CatBadge category="Normal" /> Quality drops by 1/day, doubles after SellIn expires
+              </div>
+              <div>
+                <CatBadge category="Aged" /> Quality <em>increases</em> by 1/day (better with age)
+              </div>
+              <div>
+                <CatBadge category="Legendary" /> Never sold, never degrades (Quality stays 80)
+              </div>
+              <div>
+                <CatBadge category="BackstagePass" /> Quality rises as concert nears: +2 at 10d, +3
+                at 5d, drops to 0 after
+              </div>
+              <div>
+                <CatBadge category="Conjured" /> Degrades twice as fast as Normal items
+              </div>
             </div>
-            <div style={s.rulesNote}>
+            <div style={styles.rulesNote}>
               Quality is always 0&ndash;50 (except Legendary at 80).
             </div>
           </div>
-          <div style={s.csvLabel}>
-            Inventory CSV &mdash; one item per line: <code style={s.code}>Name,Category,SellIn,Quality</code>
+          <div style={styles.csvLabel}>
+            Inventory CSV &mdash; one item per line:{" "}
+            <code style={styles.code}>Name,Category,SellIn,Quality</code>
           </div>
           <textarea
             value={inventory}
             onChange={(e) => setInventory(e.target.value)}
             rows={8}
-            style={s.textarea}
+            style={styles.textarea}
           />
-          <button
-            onClick={handleStart}
-            disabled={startApi.loading}
-            style={s.startBtn}
-          >
+          <button onClick={handleStart} disabled={startApi.loading} style={styles.startBtn}>
             {startApi.loading ? "Starting..." : "Start Simulation"}
           </button>
-          {startApi.error && <div style={s.error}>{startApi.error}</div>}
+          {startApi.error && <div style={styles.error}>{startApi.error}</div>}
         </>
       ) : (
         <>
-          <div style={s.dayBar}>
-            <div style={s.dayLabel}>Day {day}</div>
-            <button
-              onClick={handleNextDay}
-              disabled={advancing}
-              style={s.nextDayBtn}
-            >
+          <div style={styles.dayBar}>
+            <div style={styles.dayLabel}>Day {day}</div>
+            <button onClick={handleNextDay} disabled={advancing} style={styles.nextDayBtn}>
               {advancing ? "Advancing..." : "Next Day \u2192"}
             </button>
-            <button onClick={handleEnd} style={s.endBtn}>
+            <button onClick={handleEnd} style={styles.endBtn}>
               End
             </button>
           </div>
 
-          {cmdApi.error && <div style={s.error}>{cmdApi.error}</div>}
+          {cmdApi.error && <div style={styles.error}>{cmdApi.error}</div>}
 
-          <table style={s.table}>
+          <table style={styles.table}>
             <thead>
               <tr>
-                <th style={s.th}>Item</th>
-                <th style={s.th}>Category</th>
-                <th style={{ ...s.th, textAlign: "right" }}>SellIn</th>
-                <th style={s.th}>Quality</th>
-                <th style={{ ...s.th, textAlign: "center", width: "50px" }}>{"\u0394"}</th>
+                <th style={styles.th}>Item</th>
+                <th style={styles.th}>Category</th>
+                <th style={{ ...styles.th, textAlign: "right" }}>SellIn</th>
+                <th style={styles.th}>Quality</th>
+                <th style={{ ...styles.th, textAlign: "center", width: "50px" }}>{"\u0394"}</th>
               </tr>
             </thead>
             <tbody>
@@ -233,22 +237,26 @@ export function GildedRosePanel() {
                 const dead = item.quality <= 0 && item.category !== "Legendary";
                 return (
                   <tr key={`${item.name}-${i}`} style={dead ? { opacity: 0.4 } : undefined}>
-                    <td style={s.td}>
+                    <td style={styles.td}>
                       <span style={dead ? { textDecoration: "line-through" } : undefined}>
                         {item.name}
                       </span>
                     </td>
-                    <td style={s.td}><CatBadge category={item.category} /></td>
-                    <td style={{ ...s.td, textAlign: "right", fontFamily: "monospace" }}>
-                      <span style={{ color: expired ? "#f87171" : "#94a3b8" }}>
-                        {item.sellIn}
-                      </span>
+                    <td style={styles.td}>
+                      <CatBadge category={item.category} />
                     </td>
-                    <td style={s.td}>
+                    <td style={{ ...styles.td, textAlign: "right", fontFamily: "monospace" }}>
+                      <span style={{ color: expired ? "#f87171" : "#94a3b8" }}>{item.sellIn}</span>
+                    </td>
+                    <td style={styles.td}>
                       <QualityBar quality={item.quality} max={qualityMaxFor(item.category)} />
                     </td>
-                    <td style={{ ...s.td, textAlign: "center" }}>
-                      {prev ? <Delta prev={prev.quality} curr={item.quality} /> : <span style={{ color: "#475569" }}>&mdash;</span>}
+                    <td style={{ ...styles.td, textAlign: "center" }}>
+                      {prev ? (
+                        <Delta prev={prev.quality} curr={item.quality} />
+                      ) : (
+                        <span style={{ color: "#475569" }}>&mdash;</span>
+                      )}
                     </td>
                   </tr>
                 );
@@ -261,7 +269,7 @@ export function GildedRosePanel() {
   );
 }
 
-const s = {
+const styles = {
   panel: { padding: "28px 32px" },
   title: {
     fontSize: "22px",

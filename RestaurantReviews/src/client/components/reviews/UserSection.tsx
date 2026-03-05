@@ -21,7 +21,7 @@ export function UserSection({ refreshKey, onMutate }: Props) {
   const createApi = useApi<User>();
   const updateApi = useApi<User>();
   const blockApi = useApi<User>();
-  const deleteApi = useApi<void>();
+  const _deleteApi = useApi<void>();
 
   useEffect(() => {
     listApi.call("/api/users");
@@ -112,11 +112,7 @@ export function UserSection({ refreshKey, onMutate }: Props) {
           placeholder="Email"
           style={styles.input}
         />
-        <button
-          onClick={handleCreate}
-          disabled={createApi.loading}
-          style={styles.btn}
-        >
+        <button onClick={handleCreate} disabled={createApi.loading} style={styles.btn}>
           {createApi.loading ? "Creating..." : "Create User"}
         </button>
       </div>
@@ -124,13 +120,14 @@ export function UserSection({ refreshKey, onMutate }: Props) {
       {updateApi.error && <div style={styles.error}>{updateApi.error}</div>}
 
       {listApi.loading && !listApi.data && (
-        <div style={{ color: "#64748b", fontSize: "13px", padding: "16px 0" }}>Loading users...</div>
+        <div style={{ color: "#64748b", fontSize: "13px", padding: "16px 0" }}>
+          Loading users...
+        </div>
       )}
 
       <table style={styles.table}>
         <thead>
           <tr>
-            <th style={styles.th}>ID</th>
             <th style={styles.th}>Name</th>
             <th style={styles.th}>Email</th>
             <th style={styles.th}>Status</th>
@@ -140,14 +137,13 @@ export function UserSection({ refreshKey, onMutate }: Props) {
         <tbody>
           {users.length === 0 && !listApi.loading && (
             <tr>
-              <td colSpan={5} style={styles.emptyRow}>
+              <td colSpan={4} style={styles.emptyRow}>
                 No users yet &mdash; create one above to get started
               </td>
             </tr>
           )}
           {users.map((u) => (
             <tr key={u.id} data-editing={editingId === u.id || undefined}>
-              <td style={styles.td}>{u.id}</td>
               <td style={styles.td}>
                 {editingId === u.id ? (
                   <input
@@ -187,39 +183,24 @@ export function UserSection({ refreshKey, onMutate }: Props) {
                 <div style={styles.actions}>
                   {editingId === u.id ? (
                     <>
-                      <button
-                        onClick={() => handleSave(u.id)}
-                        style={styles.btnSuccessSmall}
-                      >
+                      <button onClick={() => handleSave(u.id)} style={styles.btnSuccessSmall}>
                         Save
                       </button>
-                      <button
-                        onClick={cancelEdit}
-                        style={styles.btnCancelSmall}
-                      >
+                      <button onClick={cancelEdit} style={styles.btnCancelSmall}>
                         Cancel
                       </button>
                     </>
                   ) : (
                     <>
-                      <button
-                        onClick={() => startEdit(u)}
-                        style={styles.btnSmall}
-                      >
+                      <button onClick={() => startEdit(u)} style={styles.btnSmall}>
                         Edit
                       </button>
                       {u.blocked ? (
-                        <button
-                          onClick={() => handleUnblock(u.id)}
-                          style={styles.btnSuccessSmall}
-                        >
+                        <button onClick={() => handleUnblock(u.id)} style={styles.btnSuccessSmall}>
                           Unblock
                         </button>
                       ) : (
-                        <button
-                          onClick={() => handleBlock(u.id)}
-                          style={styles.btnWarningSmall}
-                        >
+                        <button onClick={() => handleBlock(u.id)} style={styles.btnWarningSmall}>
                           Block
                         </button>
                       )}
@@ -232,9 +213,7 @@ export function UserSection({ refreshKey, onMutate }: Props) {
                     </>
                   )}
                 </div>
-                {rowError[u.id] && (
-                  <div style={styles.rowError}>{rowError[u.id]}</div>
-                )}
+                {rowError[u.id] && <div style={styles.rowError}>{rowError[u.id]}</div>}
               </td>
             </tr>
           ))}

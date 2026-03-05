@@ -39,11 +39,7 @@ export function cashRegisterRouter(): Router {
         args.push("--currency", currency);
       }
 
-      const result = await runWithFile(
-        EXERCISE_PATHS.cashRegister,
-        input,
-        args
-      );
+      const result = await runWithFile(EXERCISE_PATHS.cashRegister, input, args);
 
       if (result.exitCode !== 0) {
         console.error("cash-register stderr:", result.stderr);

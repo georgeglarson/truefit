@@ -27,6 +27,7 @@ export function migrate(db: Database.Database): void {
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
 
+    CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
     CREATE INDEX IF NOT EXISTS idx_restaurants_city ON restaurants(city);
     CREATE INDEX IF NOT EXISTS idx_reviews_user_id ON reviews(user_id);
     CREATE INDEX IF NOT EXISTS idx_reviews_restaurant_id ON reviews(restaurant_id);

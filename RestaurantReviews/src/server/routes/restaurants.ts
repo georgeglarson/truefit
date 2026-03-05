@@ -1,6 +1,7 @@
 import { Router } from "express";
 import type Database from "better-sqlite3";
 import { RestaurantModel } from "../models/restaurant.js";
+import { parseId, requireStrings, deleteWithFKCheck } from "./validate.js";
 
 export function restaurantsRouter(db: Database.Database): Router {
   const router = Router();
@@ -24,11 +25,8 @@ export function restaurantsRouter(db: Database.Database): Router {
 
   router.get("/:id", (req, res, next) => {
     try {
-      const id = Number(req.params.id);
-      if (isNaN(id)) {
-        res.status(400).json({ error: "invalid restaurant id" });
-        return;
-      }
+      const id = parseId(req, res, "restaurant");
+      if (id === null) return;
 
       const restaurant = restaurants.findById(id);
       if (!restaurant) {
@@ -44,29 +42,16 @@ export function restaurantsRouter(db: Database.Database): Router {
 
   router.post("/", (req, res, next) => {
     try {
-      const { name, city, cuisine } = req.body;
+      const fields = requireStrings(res, {
+        name: req.body.name,
+        city: req.body.city,
+      });
+      if (!fields) return;
 
-      if (!name || !city) {
-        res.status(400).json({ error: "name and city are required" });
-        return;
-      }
-
-      if (typeof name !== "string" || typeof city !== "string") {
-        res.status(400).json({ error: "name and city must be strings" });
-        return;
-      }
-
-      const trimmedName = name.trim();
-      const trimmedCity = city.trim();
-
-      if (!trimmedName || !trimmedCity) {
-        res.status(400).json({ error: "name and city must not be blank" });
-        return;
-      }
-
+      const cuisine = req.body.cuisine;
       const restaurant = restaurants.create(
-        trimmedName,
-        trimmedCity,
+        fields.name,
+        fields.city,
         typeof cuisine === "string" ? cuisine.trim() : ""
       );
       res.status(201).json(restaurant);
@@ -77,31 +62,14 @@ export function restaurantsRouter(db: Database.Database): Router {
 
   router.put("/:id", (req, res, next) => {
     try {
-      const id = Number(req.params.id);
-      if (isNaN(id)) {
-        res.status(400).json({ error: "invalid restaurant id" });
-        return;
-      }
+      const id = parseId(req, res, "restaurant");
+      if (id === null) return;
 
-      const { name, city, cuisine } = req.body;
-
-      if (!name || !city) {
-        res.status(400).json({ error: "name and city are required" });
-        return;
-      }
-
-      if (typeof name !== "string" || typeof city !== "string") {
-        res.status(400).json({ error: "name and city must be strings" });
-        return;
-      }
-
-      const trimmedName = name.trim();
-      const trimmedCity = city.trim();
-
-      if (!trimmedName || !trimmedCity) {
-        res.status(400).json({ error: "name and city must not be blank" });
-        return;
-      }
+      const fields = requireStrings(res, {
+        name: req.body.name,
+        city: req.body.city,
+      });
+      if (!fields) return;
 
       const existing = restaurants.findById(id);
       if (!existing) {
@@ -109,10 +77,11 @@ export function restaurantsRouter(db: Database.Database): Router {
         return;
       }
 
+      const cuisine = req.body.cuisine;
       const restaurant = restaurants.update(
         id,
-        trimmedName,
-        trimmedCity,
+        fields.name,
+        fields.city,
         typeof cuisine === "string" ? cuisine.trim() : ""
       );
       res.json(restaurant);
@@ -123,11 +92,8 @@ export function restaurantsRouter(db: Database.Database): Router {
 
   router.delete("/:id", (req, res, next) => {
     try {
-      const id = Number(req.params.id);
-      if (isNaN(id)) {
-        res.status(400).json({ error: "invalid restaurant id" });
-        return;
-      }
+      const id = parseId(req, res, "restaurant");
+      if (id === null) return;
 
       const existing = restaurants.findById(id);
       if (!existing) {
@@ -135,24 +101,11 @@ export function restaurantsRouter(db: Database.Database): Router {
         return;
       }
 
-      try {
-        const deleted = restaurants.deleteById(id);
-        if (!deleted) {
-          res.status(404).json({ error: "restaurant not found" });
-          return;
-        }
-        res.status(204).send();
-      } catch (err: unknown) {
-        const msg =
-          err instanceof Error ? err.message : String(err);
-        if (msg.includes("FOREIGN KEY constraint failed")) {
-          res.status(409).json({
-            error: "cannot delete restaurant with existing reviews",
-          });
-          return;
-        }
-        throw err;
-      }
+      deleteWithFKCheck(
+        res,
+        () => restaurants.deleteById(id),
+        "cannot delete restaurant with existing reviews"
+      );
     } catch (err) {
       next(err);
     }

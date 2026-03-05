@@ -118,30 +118,32 @@ function KeyboardViz({ output }: { output: string }) {
   };
 
   return (
-    <div style={s.vizContainer}>
+    <div style={styles.vizContainer}>
       {/* Typed output */}
-      <div style={s.typedRow}>
-        <span style={s.typedLabel}>Output:</span>
-        <span style={s.typedText}>
+      <div style={styles.typedRow}>
+        <span style={styles.typedLabel}>Output:</span>
+        <span style={styles.typedText}>
           {typed ? (
             typed.split("").map((ch, i) =>
               ch === " " ? (
-                <span key={i} style={s.spaceChar}>{"\u2423"}</span>
+                <span key={i} style={styles.spaceChar}>
+                  {"\u2423"}
+                </span>
               ) : (
                 <span key={i}>{ch}</span>
               )
             )
           ) : (
-            <span style={s.typedPlaceholder}>_</span>
+            <span style={styles.typedPlaceholder}>_</span>
           )}
-          <span style={s.cursor}>|</span>
+          <span style={styles.cursor}>|</span>
         </span>
       </div>
 
       {/* Keyboard grid */}
-      <div style={s.grid}>
+      <div style={styles.grid}>
         {LAYOUT.map((row, ri) => (
-          <div key={ri} style={s.gridRow}>
+          <div key={ri} style={styles.gridRow}>
             {row.split("").map((ch, ci) => {
               const isCursor = current.row === ri && current.col === ci;
               const isJustSelected = isCursor && current.selected === ch;
@@ -174,7 +176,7 @@ function KeyboardViz({ output }: { output: string }) {
                 <div
                   key={ci}
                   style={{
-                    ...s.cell,
+                    ...styles.cell,
                     background: bg,
                     borderColor: border,
                     color,
@@ -190,59 +192,84 @@ function KeyboardViz({ output }: { output: string }) {
       </div>
 
       {/* Current move indicator */}
-      <div style={s.moveIndicator}>
+      <div style={styles.moveIndicator}>
         {current.move === "start" && "Cursor at A — ready"}
         {current.move === "U" && "\u2191 Up"}
         {current.move === "D" && "\u2193 Down"}
         {current.move === "L" && "\u2190 Left"}
         {current.move === "R" && "\u2192 Right"}
-        {current.move === "#" && <><span style={{ color: "#22d3ee" }}>Select</span>{` "${current.selected}"`}</>}
+        {current.move === "#" && (
+          <>
+            <span style={{ color: "#22d3ee" }}>Select</span>
+            {` "${current.selected}"`}
+          </>
+        )}
         {current.move === "S" && <span style={{ color: "#fbbf24" }}>{"\u2423"} Space</span>}
-        <span style={s.stepCount}>{stepIdx}/{totalSteps - 1}</span>
+        <span style={styles.stepCount}>
+          {stepIdx}/{totalSteps - 1}
+        </span>
       </div>
 
       {/* Controls */}
-      <div style={s.controls}>
-        <button onClick={reset} style={s.ctrlBtn} title="Reset">
+      <div style={styles.controls}>
+        <button onClick={reset} style={styles.ctrlBtn} title="Reset" aria-label="Reset">
           {"\u23EE"}
         </button>
-        <button onClick={stepBack} style={s.ctrlBtn} disabled={stepIdx === 0} title="Step back">
+        <button
+          onClick={stepBack}
+          style={styles.ctrlBtn}
+          disabled={stepIdx === 0}
+          title="Step back"
+          aria-label="Step back"
+        >
           {"\u23EA"}
         </button>
         {playing ? (
-          <button onClick={stop} style={s.ctrlBtnPrimary} title="Pause">
+          <button onClick={stop} style={styles.ctrlBtnPrimary} title="Pause" aria-label="Pause">
             {"\u23F8"}
           </button>
         ) : (
-          <button onClick={play} style={s.ctrlBtnPrimary} disabled={stepIdx >= totalSteps - 1} title="Play">
+          <button
+            onClick={play}
+            style={styles.ctrlBtnPrimary}
+            disabled={stepIdx >= totalSteps - 1}
+            title="Play"
+            aria-label="Play"
+          >
             {"\u25B6"}
           </button>
         )}
-        <button onClick={stepForward} style={s.ctrlBtn} disabled={stepIdx >= totalSteps - 1} title="Step forward">
+        <button
+          onClick={stepForward}
+          style={styles.ctrlBtn}
+          disabled={stepIdx >= totalSteps - 1}
+          title="Step forward"
+          aria-label="Step forward"
+        >
           {"\u23E9"}
         </button>
-        <div style={s.speedGroup}>
+        <div style={styles.speedGroup}>
           <button
             onClick={() => setSpeed(400)}
-            style={{ ...s.speedBtn, ...(speed === 400 ? s.speedActive : {}) }}
+            style={{ ...styles.speedBtn, ...(speed === 400 ? styles.speedActive : {}) }}
           >
             0.5x
           </button>
           <button
             onClick={() => setSpeed(200)}
-            style={{ ...s.speedBtn, ...(speed === 200 ? s.speedActive : {}) }}
+            style={{ ...styles.speedBtn, ...(speed === 200 ? styles.speedActive : {}) }}
           >
             1x
           </button>
           <button
             onClick={() => setSpeed(80)}
-            style={{ ...s.speedBtn, ...(speed === 80 ? s.speedActive : {}) }}
+            style={{ ...styles.speedBtn, ...(speed === 80 ? styles.speedActive : {}) }}
           >
             2x
           </button>
           <button
             onClick={() => setSpeed(30)}
-            style={{ ...s.speedBtn, ...(speed === 30 ? s.speedActive : {}) }}
+            style={{ ...styles.speedBtn, ...(speed === 30 ? styles.speedActive : {}) }}
           >
             5x
           </button>
@@ -265,19 +292,18 @@ export function OnScreenKeyboardPanel() {
   };
 
   return (
-    <div style={s.panel}>
-      <h2 style={s.title}>On-Screen Keyboard</h2>
-      <p style={s.desc}>
-        Enter words (one per line) to get the cursor path on a TV-style remote
-        keyboard. The visualizer below replays each move so you can verify the
-        path is correct.
+    <div style={styles.panel}>
+      <h2 style={styles.title}>On-Screen Keyboard</h2>
+      <p style={styles.desc}>
+        Enter words (one per line) to get the cursor path on a TV-style remote keyboard. The
+        visualizer below replays each move so you can verify the path is correct.
       </p>
 
       <ContextBox>
         <ContextBox.Section heading="Problem">
           Simulate a TV/DVR on-screen keyboard where a cursor starts at 'A' and moves
-          Up/Down/Left/Right to spell words. Output the minimal sequence of moves and
-          selections (U, D, L, R, S) for each input word.
+          Up/Down/Left/Right to spell words. Output the minimal sequence of moves and selections (U,
+          D, L, R, S) for each input word.
         </ContextBox.Section>
         <ContextBox.Section heading="Solution">
           <Lang>Python</Lang> &mdash; If this were production code, it would be scripting device
@@ -287,8 +313,8 @@ export function OnScreenKeyboardPanel() {
         </ContextBox.Section>
         <ContextBox.Section heading="Testing">
           <Stat>74 tests</Stat> &mdash; covers single characters, full words, phrases with spaces,
-          wraparound edge cases, every character on the keyboard, multi-word input, and output format
-          verification. Tests validate both the move sequence and final cursor position.
+          wraparound edge cases, every character on the keyboard, multi-word input, and output
+          format verification. Tests validate both the move sequence and final cursor position.
         </ContextBox.Section>
       </ContextBox>
 
@@ -297,21 +323,21 @@ export function OnScreenKeyboardPanel() {
         onChange={(e) => setInput(e.target.value)}
         placeholder="words to spell"
         rows={3}
-        style={s.textarea}
+        style={styles.textarea}
       />
 
-      <button onClick={handleRun} disabled={loading} style={s.button}>
-        {loading ? "Running..." : "Run"}
+      <button onClick={handleRun} disabled={loading} style={styles.button}>
+        {loading ? "Spelling..." : "Spell It"}
       </button>
 
-      {error && <div style={s.error}>{error}</div>}
+      {error && <div style={styles.error}>{error}</div>}
 
       {data && (
         <>
           <KeyboardViz output={data.output} />
-          <details style={s.rawDetails}>
-            <summary style={s.rawSummary}>Raw output</summary>
-            <pre style={s.rawOutput}>{data.output}</pre>
+          <details style={styles.rawDetails}>
+            <summary style={styles.rawSummary}>Raw output</summary>
+            <pre style={styles.rawOutput}>{data.output}</pre>
           </details>
         </>
       )}
@@ -319,7 +345,7 @@ export function OnScreenKeyboardPanel() {
   );
 }
 
-const s = {
+const styles = {
   panel: { padding: "28px 32px" },
   title: {
     fontSize: "22px",

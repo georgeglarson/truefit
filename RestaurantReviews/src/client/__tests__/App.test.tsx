@@ -20,7 +20,7 @@ function jsonResponse(data: unknown, status = 200) {
   });
 }
 
-function noContentResponse() {
+function _noContentResponse() {
   return Promise.resolve({
     ok: true,
     status: 204,
@@ -48,7 +48,7 @@ describe("App", () => {
   it("renders the header", () => {
     mockInitialLoads();
     render(<App />);
-    expect(screen.getByText("TrueFit Control Panel")).toBeInTheDocument();
+    expect(screen.getByText("TrueFit Code Challenge")).toBeInTheDocument();
   });
 
   it("renders tab navigation", () => {
@@ -107,26 +107,32 @@ describe("App", () => {
 // ── Exercise Panels ──────────────────────────────────────────────────
 
 describe("CashRegisterPanel", () => {
-  it("renders input and run button", () => {
+  it("renders structured inputs and Make Change button", () => {
     mockInitialLoads();
     render(<App />);
     fireEvent.click(screen.getByText("Cash Register", { selector: "button" }));
-    expect(screen.getByPlaceholderText("owed,paid")).toBeInTheDocument();
-    expect(screen.getByText("Run")).toBeInTheDocument();
+    // Has dollar amount inputs and the action button
+    expect(screen.getByText("Make Change")).toBeInTheDocument();
+    expect(screen.getByText("+ Add")).toBeInTheDocument();
+    // Default transactions are pre-loaded
+    expect(screen.getByText("$2.12")).toBeInTheDocument();
   });
 
-  it("displays output on successful run", async () => {
+  it("displays parsed change output on successful run", async () => {
     mockInitialLoads();
     render(<App />);
     fireEvent.click(screen.getByText("Cash Register", { selector: "button" }));
     mockFetch.mockReturnValueOnce(
-      jsonResponse({ output: "Quarter:3,Dime:1" })
+      jsonResponse({
+        output: "3 quarters,1 dime,3 pennies\n3 pennies\n1 dollar,1 quarter,4 dimes,2 pennies",
+      })
     );
 
-    fireEvent.click(screen.getByText("Run"));
+    fireEvent.click(screen.getByText("Make Change"));
 
     await waitFor(() => {
-      expect(screen.getByText("Quarter:3,Dime:1")).toBeInTheDocument();
+      expect(screen.getByText("3 quarters")).toBeInTheDocument();
+      expect(screen.getByText("1 dime")).toBeInTheDocument();
     });
   });
 
@@ -134,11 +140,9 @@ describe("CashRegisterPanel", () => {
     mockInitialLoads();
     render(<App />);
     fireEvent.click(screen.getByText("Cash Register", { selector: "button" }));
-    mockFetch.mockReturnValueOnce(
-      jsonResponse({ error: "exercise failed" }, 422)
-    );
+    mockFetch.mockReturnValueOnce(jsonResponse({ error: "exercise failed" }, 422));
 
-    fireEvent.click(screen.getByText("Run"));
+    fireEvent.click(screen.getByText("Make Change"));
 
     await waitFor(() => {
       expect(screen.getByText("exercise failed")).toBeInTheDocument();
@@ -153,7 +157,7 @@ describe("MissingNumberPanel", () => {
     fireEvent.click(screen.getByText("Missing Number", { selector: "button" }));
     mockFetch.mockReturnValueOnce(jsonResponse({ output: "3" }));
 
-    fireEvent.click(screen.getByText("Run"));
+    fireEvent.click(screen.getByText("Find It"));
 
     await waitFor(() => {
       expect(screen.getByText("3")).toBeInTheDocument();
@@ -162,26 +166,23 @@ describe("MissingNumberPanel", () => {
 });
 
 describe("MorseCodePanel", () => {
-  it("has encode/decode toggle", () => {
+  it("has Text to Morse / Morse to Text toggle", () => {
     mockInitialLoads();
     render(<App />);
     fireEvent.click(screen.getByText("Morse Code", { selector: "button" }));
-    expect(screen.getAllByText("Encode").length).toBeGreaterThanOrEqual(1);
-    expect(screen.getByText("Decode")).toBeInTheDocument();
+    expect(screen.getByText("Text to Morse")).toBeInTheDocument();
+    expect(screen.getByText("Morse to Text")).toBeInTheDocument();
   });
 
-  it("encodes text", async () => {
+  it("converts text to morse", async () => {
     mockInitialLoads();
     render(<App />);
     fireEvent.click(screen.getByText("Morse Code", { selector: "button" }));
-    mockFetch.mockReturnValueOnce(
-      jsonResponse({ output: ".... . .-.. .-.. ---" })
-    );
+    mockFetch.mockReturnValueOnce(jsonResponse({ output: ".... . .-.. .-.. ---" }));
 
     const textarea = screen.getByPlaceholderText("HELLO WORLD");
     await userEvent.type(textarea, "HELLO");
-    const encodeButtons = screen.getAllByText("Encode");
-    fireEvent.click(encodeButtons[encodeButtons.length - 1]);
+    fireEvent.click(screen.getByText("Convert"));
 
     await waitFor(() => {
       expect(screen.getByText(".... . .-.. .-.. ---")).toBeInTheDocument();
@@ -192,8 +193,7 @@ describe("MorseCodePanel", () => {
     mockInitialLoads();
     render(<App />);
     fireEvent.click(screen.getByText("Morse Code", { selector: "button" }));
-    const decodeButtons = screen.getAllByText("Decode");
-    fireEvent.click(decodeButtons[0]);
+    fireEvent.click(screen.getByText("Morse to Text"));
     expect(screen.getByPlaceholderText(/\.\.\.\./)).toBeInTheDocument();
   });
 });
@@ -203,11 +203,9 @@ describe("OnScreenKeyboardPanel", () => {
     mockInitialLoads();
     render(<App />);
     fireEvent.click(screen.getByText("On-Screen Keyboard", { selector: "button" }));
-    mockFetch.mockReturnValueOnce(
-      jsonResponse({ output: "D,R,R,R,S,U,L,L,L,S" })
-    );
+    mockFetch.mockReturnValueOnce(jsonResponse({ output: "D,R,R,R,S,U,L,L,L,S" }));
 
-    fireEvent.click(screen.getByText("Run"));
+    fireEvent.click(screen.getByText("Spell It"));
 
     await waitFor(() => {
       expect(screen.getByText("D,R,R,R,S,U,L,L,L,S")).toBeInTheDocument();
@@ -281,8 +279,7 @@ describe("ReviewsPanel", () => {
 
     // Now mock the create call followed by refresh calls
     mockFetch.mockImplementation((url: string, opts?: RequestInit) => {
-      if (opts?.method === "POST" && url === "/api/users")
-        return jsonResponse(newUser, 201);
+      if (opts?.method === "POST" && url === "/api/users") return jsonResponse(newUser, 201);
       if (url === "/api/users") return jsonResponse([newUser]);
       if (url === "/api/restaurants") return jsonResponse([]);
       if (url === "/api/reviews") return jsonResponse([]);
@@ -290,10 +287,7 @@ describe("ReviewsPanel", () => {
     });
 
     await userEvent.type(screen.getAllByPlaceholderText("Name")[0], "Alice");
-    await userEvent.type(
-      screen.getByPlaceholderText("Email"),
-      "alice@example.com"
-    );
+    await userEvent.type(screen.getByPlaceholderText("Email"), "alice@example.com");
     fireEvent.click(screen.getByText("Create User"));
 
     await waitFor(() => {
@@ -310,8 +304,7 @@ describe("ReviewsPanel", () => {
     });
 
     mockFetch.mockImplementation((url: string, opts?: RequestInit) => {
-      if (opts?.method === "POST")
-        return jsonResponse({ error: "email already exists" }, 409);
+      if (opts?.method === "POST") return jsonResponse({ error: "email already exists" }, 409);
       if (url === "/api/users") return jsonResponse([]);
       if (url === "/api/restaurants") return jsonResponse([]);
       if (url === "/api/reviews") return jsonResponse([]);
@@ -319,10 +312,7 @@ describe("ReviewsPanel", () => {
     });
 
     await userEvent.type(screen.getAllByPlaceholderText("Name")[0], "Alice");
-    await userEvent.type(
-      screen.getByPlaceholderText("Email"),
-      "dup@example.com"
-    );
+    await userEvent.type(screen.getByPlaceholderText("Email"), "dup@example.com");
     fireEvent.click(screen.getByText("Create User"));
 
     await waitFor(() => {
@@ -358,10 +348,7 @@ describe("ReviewsPanel", () => {
     const nameInputs = screen.getAllByPlaceholderText("Name");
     await userEvent.type(nameInputs[1], "Pizza Palace");
     await userEvent.type(screen.getByPlaceholderText("City"), "Pittsburgh");
-    await userEvent.type(
-      screen.getByPlaceholderText("Cuisine (optional)"),
-      "Italian"
-    );
+    await userEvent.type(screen.getByPlaceholderText("Cuisine (optional)"), "Italian");
 
     // "Create" buttons: [restaurant section, review section]
     const createBtns = screen.getAllByText("Create");
@@ -417,18 +404,22 @@ describe("ReviewsPanel", () => {
   });
 
   it("renders review table with names instead of IDs", async () => {
-    mockInitialLoads([], [], [
-      {
-        id: 1,
-        user_id: 1,
-        restaurant_id: 1,
-        rating: 4,
-        body: "Good",
-        user_name: "Bob",
-        restaurant_name: "Taco Stand",
-        created_at: "2024-01-01",
-      },
-    ]);
+    mockInitialLoads(
+      [],
+      [],
+      [
+        {
+          id: 1,
+          user_id: 1,
+          restaurant_id: 1,
+          rating: 4,
+          body: "Good",
+          user_name: "Bob",
+          restaurant_name: "Taco Stand",
+          created_at: "2024-01-01",
+        },
+      ]
+    );
     render(<App />);
 
     await waitFor(() => {
@@ -464,10 +455,7 @@ describe("ReviewsPanel", () => {
       expect(screen.getByText("Place B")).toBeInTheDocument();
     });
 
-    await userEvent.type(
-      screen.getByPlaceholderText("Filter by city..."),
-      "Pitt"
-    );
+    await userEvent.type(screen.getByPlaceholderText("Filter by city..."), "Pitt");
 
     expect(screen.getByText("Place A")).toBeInTheDocument();
     expect(screen.queryByText("Place B")).not.toBeInTheDocument();

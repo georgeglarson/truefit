@@ -52,26 +52,25 @@ describe("POST /api/exercises/cash-register", () => {
       .post("/api/exercises/cash-register")
       .send({ input: "1.00,2.00\n", seed: 42, divisor: 3, currency: "EUR" });
 
-    expect(mockRunWithFile).toHaveBeenCalledWith(
-      expect.any(String),
-      "1.00,2.00\n",
-      ["--seed", "42", "--divisor", "3", "--currency", "EUR"]
-    );
+    expect(mockRunWithFile).toHaveBeenCalledWith(expect.any(String), "1.00,2.00\n", [
+      "--seed",
+      "42",
+      "--divisor",
+      "3",
+      "--currency",
+      "EUR",
+    ]);
   });
 
   it("returns 400 for missing input", async () => {
     const app = freshApp();
-    const res = await request(app)
-      .post("/api/exercises/cash-register")
-      .send({});
+    const res = await request(app).post("/api/exercises/cash-register").send({});
     expect(res.status).toBe(400);
   });
 
   it("returns 400 for non-string input", async () => {
     const app = freshApp();
-    const res = await request(app)
-      .post("/api/exercises/cash-register")
-      .send({ input: 123 });
+    const res = await request(app).post("/api/exercises/cash-register").send({ input: 123 });
     expect(res.status).toBe(400);
   });
 
@@ -83,9 +82,7 @@ describe("POST /api/exercises/cash-register", () => {
       exitCode: 1,
     });
 
-    const res = await request(app)
-      .post("/api/exercises/cash-register")
-      .send({ input: "bad\n" });
+    const res = await request(app).post("/api/exercises/cash-register").send({ input: "bad\n" });
 
     expect(res.status).toBe(422);
     expect(res.body.error).toBe("exercise failed");
@@ -115,9 +112,7 @@ describe("POST /api/exercises/missing-number", () => {
 
   it("returns 400 for missing input", async () => {
     const app = freshApp();
-    const res = await request(app)
-      .post("/api/exercises/missing-number")
-      .send({});
+    const res = await request(app).post("/api/exercises/missing-number").send({});
     expect(res.status).toBe(400);
   });
 
@@ -129,9 +124,7 @@ describe("POST /api/exercises/missing-number", () => {
       exitCode: 1,
     });
 
-    const res = await request(app)
-      .post("/api/exercises/missing-number")
-      .send({ input: "bad" });
+    const res = await request(app).post("/api/exercises/missing-number").send({ input: "bad" });
     expect(res.status).toBe(422);
   });
 });
@@ -157,9 +150,7 @@ describe("POST /api/exercises/morse-code/encode", () => {
 
   it("returns 400 for missing input", async () => {
     const app = freshApp();
-    const res = await request(app)
-      .post("/api/exercises/morse-code/encode")
-      .send({});
+    const res = await request(app).post("/api/exercises/morse-code/encode").send({});
     expect(res.status).toBe(400);
   });
 
@@ -171,9 +162,7 @@ describe("POST /api/exercises/morse-code/encode", () => {
       exitCode: 1,
     });
 
-    const res = await request(app)
-      .post("/api/exercises/morse-code/encode")
-      .send({ input: "bad" });
+    const res = await request(app).post("/api/exercises/morse-code/encode").send({ input: "bad" });
     expect(res.status).toBe(422);
   });
 });
@@ -197,9 +186,7 @@ describe("POST /api/exercises/morse-code/decode", () => {
 
   it("returns 400 for missing input", async () => {
     const app = freshApp();
-    const res = await request(app)
-      .post("/api/exercises/morse-code/decode")
-      .send({});
+    const res = await request(app).post("/api/exercises/morse-code/decode").send({});
     expect(res.status).toBe(400);
   });
 });
@@ -231,23 +218,16 @@ describe("POST /api/exercises/on-screen-keyboard", () => {
       exitCode: 0,
     });
 
-    await request(app)
-      .post("/api/exercises/on-screen-keyboard")
-      .send({ input: "test\n" });
+    await request(app).post("/api/exercises/on-screen-keyboard").send({ input: "test\n" });
 
-    expect(mockRunWithFile).toHaveBeenCalledWith(
-      expect.any(String),
-      "test\n",
-      [],
-      { interpreter: "python3" }
-    );
+    expect(mockRunWithFile).toHaveBeenCalledWith(expect.any(String), "test\n", [], {
+      interpreter: "python3",
+    });
   });
 
   it("returns 400 for missing input", async () => {
     const app = freshApp();
-    const res = await request(app)
-      .post("/api/exercises/on-screen-keyboard")
-      .send({});
+    const res = await request(app).post("/api/exercises/on-screen-keyboard").send({});
     expect(res.status).toBe(400);
   });
 
@@ -259,9 +239,7 @@ describe("POST /api/exercises/on-screen-keyboard", () => {
       exitCode: 1,
     });
 
-    const res = await request(app)
-      .post("/api/exercises/on-screen-keyboard")
-      .send({ input: "bad" });
+    const res = await request(app).post("/api/exercises/on-screen-keyboard").send({ input: "bad" });
     expect(res.status).toBe(422);
   });
 });
@@ -277,9 +255,7 @@ describe("runner.ts (unit)", () => {
       exitCode: 0,
     });
 
-    await request(app)
-      .post("/api/exercises/cash-register")
-      .send({ input: "1,2\n" });
+    await request(app).post("/api/exercises/cash-register").send({ input: "1,2\n" });
 
     const binaryPath = mockRunWithFile.mock.calls[0][0];
     expect(binaryPath).toContain("CashRegister");
@@ -294,9 +270,7 @@ describe("runner.ts (unit)", () => {
       exitCode: 0,
     });
 
-    await request(app)
-      .post("/api/exercises/missing-number")
-      .send({ input: "1,2\n" });
+    await request(app).post("/api/exercises/missing-number").send({ input: "1,2\n" });
 
     const binaryPath = mockRunWithFile.mock.calls[0][0];
     expect(binaryPath).toContain("MissingNumber");

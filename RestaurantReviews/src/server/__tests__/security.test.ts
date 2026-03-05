@@ -106,11 +106,10 @@ describe("Cash Register argument validation", () => {
       .post("/api/exercises/cash-register")
       .send({ input: "1.00,2.00\n", currency: "EUR" });
     expect(res.status).toBe(200);
-    expect(mockRunWithFile).toHaveBeenCalledWith(
-      expect.any(String),
-      "1.00,2.00\n",
-      ["--currency", "EUR"]
-    );
+    expect(mockRunWithFile).toHaveBeenCalledWith(expect.any(String), "1.00,2.00\n", [
+      "--currency",
+      "EUR",
+    ]);
   });
 
   it("accepts valid integer seed and divisor", async () => {
@@ -135,9 +134,7 @@ describe("Stderr suppression in exercise responses", () => {
       exitCode: 139,
     });
 
-    const res = await request(app)
-      .post("/api/exercises/cash-register")
-      .send({ input: "bad\n" });
+    const res = await request(app).post("/api/exercises/cash-register").send({ input: "bad\n" });
 
     expect(res.status).toBe(422);
     expect(res.body.stderr).toBeUndefined();
@@ -158,9 +155,7 @@ describe("Stderr suppression in exercise responses", () => {
       exitCode: 1,
     });
 
-    const res = await request(app)
-      .post("/api/exercises/missing-number")
-      .send({ input: "bad" });
+    const res = await request(app).post("/api/exercises/missing-number").send({ input: "bad" });
 
     expect(res.status).toBe(422);
     expect(res.body.stderr).toBeUndefined();
@@ -176,9 +171,7 @@ describe("Stderr suppression in exercise responses", () => {
       exitCode: 1,
     });
 
-    const res = await request(app)
-      .post("/api/exercises/morse-code/encode")
-      .send({ input: "bad" });
+    const res = await request(app).post("/api/exercises/morse-code/encode").send({ input: "bad" });
 
     expect(res.status).toBe(422);
     expect(res.body.stderr).toBeUndefined();
@@ -194,9 +187,7 @@ describe("Stderr suppression in exercise responses", () => {
       exitCode: 1,
     });
 
-    const res = await request(app)
-      .post("/api/exercises/on-screen-keyboard")
-      .send({ input: "bad" });
+    const res = await request(app).post("/api/exercises/on-screen-keyboard").send({ input: "bad" });
 
     expect(res.status).toBe(422);
     expect(res.body.stderr).toBeUndefined();

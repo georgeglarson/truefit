@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import request from "supertest";
 import Database from "better-sqlite3";
 import { createApp } from "../app.js";
@@ -16,9 +16,7 @@ async function createUser(
   name = "Alice",
   email = "alice@example.com"
 ) {
-  const res = await request(app)
-    .post("/api/users")
-    .send({ name, email });
+  const res = await request(app).post("/api/users").send({ name, email });
   return res.body;
 }
 
@@ -28,9 +26,7 @@ async function createRestaurant(
   city = "Pittsburgh",
   cuisine = "Italian"
 ) {
-  const res = await request(app)
-    .post("/api/restaurants")
-    .send({ name, city, cuisine });
+  const res = await request(app).post("/api/restaurants").send({ name, city, cuisine });
   return res.body;
 }
 
@@ -41,9 +37,7 @@ async function createReview(
   rating = 4,
   body = "Great food!"
 ) {
-  const res = await request(app)
-    .post("/api/reviews")
-    .send({ userId, restaurantId, rating, body });
+  const res = await request(app).post("/api/reviews").send({ userId, restaurantId, rating, body });
   return res;
 }
 
@@ -110,49 +104,37 @@ describe("POST /api/users", () => {
 
   it("rejects missing name", async () => {
     const { app } = freshApp();
-    const res = await request(app)
-      .post("/api/users")
-      .send({ email: "a@b.com" });
+    const res = await request(app).post("/api/users").send({ email: "a@b.com" });
     expect(res.status).toBe(400);
   });
 
   it("rejects missing email", async () => {
     const { app } = freshApp();
-    const res = await request(app)
-      .post("/api/users")
-      .send({ name: "Alice" });
+    const res = await request(app).post("/api/users").send({ name: "Alice" });
     expect(res.status).toBe(400);
   });
 
   it("rejects empty name", async () => {
     const { app } = freshApp();
-    const res = await request(app)
-      .post("/api/users")
-      .send({ name: "  ", email: "a@b.com" });
+    const res = await request(app).post("/api/users").send({ name: "  ", email: "a@b.com" });
     expect(res.status).toBe(400);
   });
 
   it("rejects empty email", async () => {
     const { app } = freshApp();
-    const res = await request(app)
-      .post("/api/users")
-      .send({ name: "Alice", email: "  " });
+    const res = await request(app).post("/api/users").send({ name: "Alice", email: "  " });
     expect(res.status).toBe(400);
   });
 
   it("rejects non-string name", async () => {
     const { app } = freshApp();
-    const res = await request(app)
-      .post("/api/users")
-      .send({ name: 123, email: "a@b.com" });
+    const res = await request(app).post("/api/users").send({ name: 123, email: "a@b.com" });
     expect(res.status).toBe(400);
   });
 
   it("rejects duplicate email", async () => {
     const { app } = freshApp();
-    await request(app)
-      .post("/api/users")
-      .send({ name: "Alice", email: "alice@example.com" });
+    await request(app).post("/api/users").send({ name: "Alice", email: "alice@example.com" });
     const res = await request(app)
       .post("/api/users")
       .send({ name: "Bob", email: "alice@example.com" });
@@ -197,35 +179,27 @@ describe("PUT /api/users/:id", () => {
 
   it("returns 404 for non-existent user", async () => {
     const { app } = freshApp();
-    const res = await request(app)
-      .put("/api/users/999")
-      .send({ name: "X", email: "x@x.com" });
+    const res = await request(app).put("/api/users/999").send({ name: "X", email: "x@x.com" });
     expect(res.status).toBe(404);
   });
 
   it("returns 400 for invalid id", async () => {
     const { app } = freshApp();
-    const res = await request(app)
-      .put("/api/users/abc")
-      .send({ name: "X", email: "x@x.com" });
+    const res = await request(app).put("/api/users/abc").send({ name: "X", email: "x@x.com" });
     expect(res.status).toBe(400);
   });
 
   it("returns 400 for missing name", async () => {
     const { app } = freshApp();
     await createUser(app);
-    const res = await request(app)
-      .put("/api/users/1")
-      .send({ email: "x@x.com" });
+    const res = await request(app).put("/api/users/1").send({ email: "x@x.com" });
     expect(res.status).toBe(400);
   });
 
   it("returns 400 for blank email", async () => {
     const { app } = freshApp();
     await createUser(app);
-    const res = await request(app)
-      .put("/api/users/1")
-      .send({ name: "Alice", email: "  " });
+    const res = await request(app).put("/api/users/1").send({ name: "Alice", email: "  " });
     expect(res.status).toBe(400);
   });
 
@@ -396,17 +370,13 @@ describe("POST /api/restaurants", () => {
 
   it("rejects missing name", async () => {
     const { app } = freshApp();
-    const res = await request(app)
-      .post("/api/restaurants")
-      .send({ city: "Pittsburgh" });
+    const res = await request(app).post("/api/restaurants").send({ city: "Pittsburgh" });
     expect(res.status).toBe(400);
   });
 
   it("rejects missing city", async () => {
     const { app } = freshApp();
-    const res = await request(app)
-      .post("/api/restaurants")
-      .send({ name: "Pizza Palace" });
+    const res = await request(app).post("/api/restaurants").send({ name: "Pizza Palace" });
     expect(res.status).toBe(400);
   });
 
@@ -420,9 +390,7 @@ describe("POST /api/restaurants", () => {
 
   it("rejects non-string name", async () => {
     const { app } = freshApp();
-    const res = await request(app)
-      .post("/api/restaurants")
-      .send({ name: 42, city: "Pittsburgh" });
+    const res = await request(app).post("/api/restaurants").send({ name: 42, city: "Pittsburgh" });
     expect(res.status).toBe(400);
   });
 
@@ -455,7 +423,7 @@ describe("GET /api/restaurants", () => {
     const res = await request(app).get("/api/restaurants?city=Pittsburgh");
     expect(res.status).toBe(200);
     expect(res.body).toHaveLength(2);
-    expect(res.body.every((r: any) => r.city === "Pittsburgh")).toBe(true);
+    expect(res.body.every((r: Record<string, unknown>) => r.city === "Pittsburgh")).toBe(true);
   });
 
   it("city filter is case-insensitive", async () => {
@@ -511,26 +479,20 @@ describe("PUT /api/restaurants/:id", () => {
 
   it("returns 404 for non-existent restaurant", async () => {
     const { app } = freshApp();
-    const res = await request(app)
-      .put("/api/restaurants/999")
-      .send({ name: "X", city: "Y" });
+    const res = await request(app).put("/api/restaurants/999").send({ name: "X", city: "Y" });
     expect(res.status).toBe(404);
   });
 
   it("returns 400 for missing name", async () => {
     const { app } = freshApp();
     await createRestaurant(app);
-    const res = await request(app)
-      .put("/api/restaurants/1")
-      .send({ city: "City" });
+    const res = await request(app).put("/api/restaurants/1").send({ city: "City" });
     expect(res.status).toBe(400);
   });
 
   it("returns 400 for invalid id", async () => {
     const { app } = freshApp();
-    const res = await request(app)
-      .put("/api/restaurants/abc")
-      .send({ name: "X", city: "Y" });
+    const res = await request(app).put("/api/restaurants/abc").send({ name: "X", city: "Y" });
     expect(res.status).toBe(400);
   });
 
@@ -616,25 +578,19 @@ describe("POST /api/reviews", () => {
 
   it("rejects missing userId", async () => {
     const { app } = freshApp();
-    const res = await request(app)
-      .post("/api/reviews")
-      .send({ restaurantId: 1, rating: 3 });
+    const res = await request(app).post("/api/reviews").send({ restaurantId: 1, rating: 3 });
     expect(res.status).toBe(400);
   });
 
   it("rejects missing restaurantId", async () => {
     const { app } = freshApp();
-    const res = await request(app)
-      .post("/api/reviews")
-      .send({ userId: 1, rating: 3 });
+    const res = await request(app).post("/api/reviews").send({ userId: 1, rating: 3 });
     expect(res.status).toBe(400);
   });
 
   it("rejects missing rating", async () => {
     const { app } = freshApp();
-    const res = await request(app)
-      .post("/api/reviews")
-      .send({ userId: 1, restaurantId: 1 });
+    const res = await request(app).post("/api/reviews").send({ userId: 1, restaurantId: 1 });
     expect(res.status).toBe(400);
   });
 
@@ -740,7 +696,7 @@ describe("GET /api/reviews", () => {
     const res = await request(app).get(`/api/reviews?userId=${alice.id}`);
     expect(res.status).toBe(200);
     expect(res.body).toHaveLength(2);
-    expect(res.body.every((r: any) => r.user_id === alice.id)).toBe(true);
+    expect(res.body.every((r: Record<string, unknown>) => r.user_id === alice.id)).toBe(true);
     expect(res.body[0].user_name).toBe("Alice");
     expect(res.body[0].restaurant_name).toBe("Pizza Palace");
   });
@@ -826,18 +782,14 @@ describe("PUT /api/reviews/:id", () => {
     const user = await createUser(app);
     const restaurant = await createRestaurant(app);
     await createReview(app, user.id, restaurant.id, 3, "OK");
-    const res = await request(app)
-      .put("/api/reviews/1")
-      .send({ rating: 5, body: "Better" });
+    const res = await request(app).put("/api/reviews/1").send({ rating: 5, body: "Better" });
     expect(res.body.user_id).toBe(user.id);
     expect(res.body.restaurant_id).toBe(restaurant.id);
   });
 
   it("returns 404 for non-existent review", async () => {
     const { app } = freshApp();
-    const res = await request(app)
-      .put("/api/reviews/999")
-      .send({ rating: 5, body: "X" });
+    const res = await request(app).put("/api/reviews/999").send({ rating: 5, body: "X" });
     expect(res.status).toBe(404);
   });
 
@@ -846,9 +798,7 @@ describe("PUT /api/reviews/:id", () => {
     const user = await createUser(app);
     const restaurant = await createRestaurant(app);
     await createReview(app, user.id, restaurant.id);
-    const res = await request(app)
-      .put("/api/reviews/1")
-      .send({ body: "X" });
+    const res = await request(app).put("/api/reviews/1").send({ body: "X" });
     expect(res.status).toBe(400);
   });
 
@@ -857,17 +807,13 @@ describe("PUT /api/reviews/:id", () => {
     const user = await createUser(app);
     const restaurant = await createRestaurant(app);
     await createReview(app, user.id, restaurant.id);
-    const res = await request(app)
-      .put("/api/reviews/1")
-      .send({ rating: 6 });
+    const res = await request(app).put("/api/reviews/1").send({ rating: 6 });
     expect(res.status).toBe(400);
   });
 
   it("returns 400 for invalid id", async () => {
     const { app } = freshApp();
-    const res = await request(app)
-      .put("/api/reviews/abc")
-      .send({ rating: 5 });
+    const res = await request(app).put("/api/reviews/abc").send({ rating: 5 });
     expect(res.status).toBe(400);
   });
 
@@ -876,9 +822,7 @@ describe("PUT /api/reviews/:id", () => {
     const user = await createUser(app);
     const restaurant = await createRestaurant(app);
     await createReview(app, user.id, restaurant.id, 3, "Original");
-    const res = await request(app)
-      .put("/api/reviews/1")
-      .send({ rating: 5 });
+    const res = await request(app).put("/api/reviews/1").send({ rating: 5 });
     expect(res.status).toBe(200);
     expect(res.body.body).toBe("Original");
   });

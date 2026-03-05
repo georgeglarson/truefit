@@ -3,6 +3,7 @@ import type Database from "better-sqlite3";
 import { ReviewModel } from "../models/review.js";
 import { UserModel } from "../models/user.js";
 import { RestaurantModel } from "../models/restaurant.js";
+import { parseId } from "./validate.js";
 
 export function reviewsRouter(db: Database.Database): Router {
   const router = Router();
@@ -15,9 +16,7 @@ export function reviewsRouter(db: Database.Database): Router {
       const { userId, restaurantId, rating, body } = req.body;
 
       if (userId == null || restaurantId == null || rating == null) {
-        res
-          .status(400)
-          .json({ error: "userId, restaurantId, and rating are required" });
+        res.status(400).json({ error: "userId, restaurantId, and rating are required" });
         return;
       }
 
@@ -26,16 +25,12 @@ export function reviewsRouter(db: Database.Database): Router {
       const numRating = Number(rating);
 
       if (isNaN(numUserId) || isNaN(numRestaurantId) || isNaN(numRating)) {
-        res
-          .status(400)
-          .json({ error: "userId, restaurantId, and rating must be numbers" });
+        res.status(400).json({ error: "userId, restaurantId, and rating must be numbers" });
         return;
       }
 
       if (!Number.isInteger(numRating) || numRating < 1 || numRating > 5) {
-        res
-          .status(400)
-          .json({ error: "rating must be an integer from 1 to 5" });
+        res.status(400).json({ error: "rating must be an integer from 1 to 5" });
         return;
       }
 
@@ -100,11 +95,8 @@ export function reviewsRouter(db: Database.Database): Router {
 
   router.get("/:id", (req, res, next) => {
     try {
-      const id = Number(req.params.id);
-      if (isNaN(id)) {
-        res.status(400).json({ error: "invalid review id" });
-        return;
-      }
+      const id = parseId(req, res, "review");
+      if (id === null) return;
 
       const review = reviews.findById(id);
       if (!review) {
@@ -120,11 +112,8 @@ export function reviewsRouter(db: Database.Database): Router {
 
   router.put("/:id", (req, res, next) => {
     try {
-      const id = Number(req.params.id);
-      if (isNaN(id)) {
-        res.status(400).json({ error: "invalid review id" });
-        return;
-      }
+      const id = parseId(req, res, "review");
+      if (id === null) return;
 
       const { rating, body } = req.body;
 
@@ -141,9 +130,7 @@ export function reviewsRouter(db: Database.Database): Router {
       }
 
       if (!Number.isInteger(numRating) || numRating < 1 || numRating > 5) {
-        res
-          .status(400)
-          .json({ error: "rating must be an integer from 1 to 5" });
+        res.status(400).json({ error: "rating must be an integer from 1 to 5" });
         return;
       }
 
@@ -153,11 +140,7 @@ export function reviewsRouter(db: Database.Database): Router {
         return;
       }
 
-      const review = reviews.update(
-        id,
-        numRating,
-        typeof body === "string" ? body : existing.body
-      );
+      const review = reviews.update(id, numRating, typeof body === "string" ? body : existing.body);
       res.json(review);
     } catch (err) {
       next(err);
@@ -166,11 +149,8 @@ export function reviewsRouter(db: Database.Database): Router {
 
   router.delete("/:id", (req, res, next) => {
     try {
-      const id = Number(req.params.id);
-      if (isNaN(id)) {
-        res.status(400).json({ error: "invalid review id" });
-        return;
-      }
+      const id = parseId(req, res, "review");
+      if (id === null) return;
 
       const deleted = reviews.deleteById(id);
       if (!deleted) {

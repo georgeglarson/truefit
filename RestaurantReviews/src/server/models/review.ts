@@ -17,12 +17,7 @@ export interface ReviewWithNames extends Review {
 export class ReviewModel {
   constructor(private db: Database.Database) {}
 
-  create(
-    userId: number,
-    restaurantId: number,
-    rating: number,
-    body: string = ""
-  ): Review {
+  create(userId: number, restaurantId: number, rating: number, body: string = ""): Review {
     const stmt = this.db.prepare(
       "INSERT INTO reviews (user_id, restaurant_id, rating, body) VALUES (?, ?, ?, ?)"
     );
@@ -31,15 +26,11 @@ export class ReviewModel {
   }
 
   findAll(): Review[] {
-    return this.db
-      .prepare("SELECT * FROM reviews ORDER BY id")
-      .all() as Review[];
+    return this.db.prepare("SELECT * FROM reviews ORDER BY id").all() as Review[];
   }
 
   findById(id: number): Review | undefined {
-    return this.db
-      .prepare("SELECT * FROM reviews WHERE id = ?")
-      .get(id) as Review | undefined;
+    return this.db.prepare("SELECT * FROM reviews WHERE id = ?").get(id) as Review | undefined;
   }
 
   findByUserId(userId: number): Review[] {
@@ -93,16 +84,12 @@ export class ReviewModel {
   }
 
   update(id: number, rating: number, body: string): Review | undefined {
-    this.db
-      .prepare("UPDATE reviews SET rating = ?, body = ? WHERE id = ?")
-      .run(rating, body, id);
+    this.db.prepare("UPDATE reviews SET rating = ?, body = ? WHERE id = ?").run(rating, body, id);
     return this.findById(id);
   }
 
   deleteById(id: number): boolean {
-    const info = this.db
-      .prepare("DELETE FROM reviews WHERE id = ?")
-      .run(id);
+    const info = this.db.prepare("DELETE FROM reviews WHERE id = ?").run(id);
     return info.changes > 0;
   }
 }

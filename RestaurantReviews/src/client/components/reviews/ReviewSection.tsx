@@ -152,11 +152,7 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
           placeholder="Comment (optional)"
           style={{ ...styles.input, minHeight: "36px", flex: 1 }}
         />
-        <button
-          onClick={handleCreate}
-          disabled={createApi.loading}
-          style={styles.btn}
-        >
+        <button onClick={handleCreate} disabled={createApi.loading} style={styles.btn}>
           {createApi.loading ? "Creating..." : "Create"}
         </button>
       </div>
@@ -164,13 +160,14 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
       {updateApi.error && <div style={styles.error}>{updateApi.error}</div>}
 
       {listApi.loading && !listApi.data && (
-        <div style={{ color: "#64748b", fontSize: "13px", padding: "16px 0" }}>Loading reviews...</div>
+        <div style={{ color: "#64748b", fontSize: "13px", padding: "16px 0" }}>
+          Loading reviews...
+        </div>
       )}
 
       <table style={styles.table}>
         <thead>
           <tr>
-            <th style={styles.th}>ID</th>
             <th style={styles.th}>User</th>
             <th style={styles.th}>Restaurant</th>
             <th style={styles.th}>Rating</th>
@@ -181,14 +178,13 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
         <tbody>
           {reviews.length === 0 && !listApi.loading && (
             <tr>
-              <td colSpan={6} style={styles.emptyRow}>
+              <td colSpan={5} style={styles.emptyRow}>
                 No reviews yet &mdash; select a user and restaurant above to create one
               </td>
             </tr>
           )}
           {reviews.map((r) => (
             <tr key={r.id} data-editing={editingId === r.id || undefined}>
-              <td style={styles.td}>{r.id}</td>
               <td style={styles.td}>{r.user_name}</td>
               <td style={styles.td}>{r.restaurant_name}</td>
               <td style={styles.td}>
@@ -225,25 +221,16 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
                 <div style={styles.actions}>
                   {editingId === r.id ? (
                     <>
-                      <button
-                        onClick={() => handleSave(r.id)}
-                        style={styles.btnSuccessSmall}
-                      >
+                      <button onClick={() => handleSave(r.id)} style={styles.btnSuccessSmall}>
                         Save
                       </button>
-                      <button
-                        onClick={cancelEdit}
-                        style={styles.btnCancelSmall}
-                      >
+                      <button onClick={cancelEdit} style={styles.btnCancelSmall}>
                         Cancel
                       </button>
                     </>
                   ) : (
                     <>
-                      <button
-                        onClick={() => startEdit(r)}
-                        style={styles.btnSmall}
-                      >
+                      <button onClick={() => startEdit(r)} style={styles.btnSmall}>
                         Edit
                       </button>
                       <button

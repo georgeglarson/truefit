@@ -3,7 +3,7 @@ import { writeFile, rm, mkdtemp } from "fs/promises";
 import { tmpdir } from "os";
 import path from "path";
 
-const MAX_INPUT_BYTES = 64 * 1024;  // 64 KB
+const MAX_INPUT_BYTES = 64 * 1024; // 64 KB
 const MAX_OUTPUT_BYTES = 256 * 1024; // 256 KB
 
 export interface RunResult {
@@ -32,9 +32,7 @@ export async function runWithFile(
   await writeFile(inputFile, input, "utf-8");
 
   try {
-    const cmd = options.interpreter
-      ? options.interpreter
-      : binary;
+    const cmd = options.interpreter ? options.interpreter : binary;
     const args = options.interpreter
       ? [binary, inputFile, ...extraArgs]
       : [inputFile, ...extraArgs];

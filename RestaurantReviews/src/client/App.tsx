@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import type { TabId } from "./types/index.js";
 import { TabNav } from "./components/TabNav.js";
 import { ReviewsPanel } from "./components/reviews/ReviewsPanel.js";
@@ -8,7 +8,7 @@ import { MorseCodePanel } from "./components/exercises/MorseCodePanel.js";
 import { OnScreenKeyboardPanel } from "./components/exercises/OnScreenKeyboardPanel.js";
 import { GildedRosePanel } from "./components/exercises/GildedRosePanel.js";
 
-const PANELS: Record<TabId, () => JSX.Element> = {
+const PANELS: Record<TabId, React.ComponentType> = {
   reviews: ReviewsPanel,
   "cash-register": CashRegisterPanel,
   "missing-number": MissingNumberPanel,
@@ -24,8 +24,8 @@ export function App() {
   return (
     <div style={styles.shell}>
       <header style={styles.header}>
-        <h1 style={styles.h1}>TrueFit Control Panel</h1>
-        <span style={styles.subtitle}>6 exercises &middot; 6 languages &middot; 740+ tests</span>
+        <h1 style={styles.h1}>TrueFit Code Challenge</h1>
+        <span style={styles.subtitle}>6 exercises &middot; 6 languages &middot; 830+ tests</span>
       </header>
       <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
       <main style={styles.main}>
