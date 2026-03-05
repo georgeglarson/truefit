@@ -1,0 +1,25 @@
+# Rust
+CashRegister/target/
+Cargo.lock
+
+# Zig
+MissingNumber/.zig-cache/
+MissingNumber/zig-out/
+
+# Go
+GildedRose/gildedrose
+
+# Python
+__pycache__/
+.pytest_cache/
+
+# Node
+node_modules/
+dist/
+*.db
+
+# Prep notes
+CashRegister/prep/
+
+# OS
+.DS_Store
