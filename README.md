@@ -1,5 +1,7 @@
 # TrueFit Code Exercises
 
+[![CI](https://github.com/georgeglarson/truefit/actions/workflows/ci.yml/badge.svg)](https://github.com/georgeglarson/truefit/actions/workflows/ci.yml)
+
 Solutions to TrueFit's coding challenges. Each exercise is implemented in a different language, chosen to match the problem domain.
 
 ## Exercises
@@ -47,6 +49,10 @@ Or run everything from the root:
 ```sh
 make test-all    # runs all test suites in sequence
 ```
+
+## DavesSnackShack
+
+DavesSnackShack is a QA/testing exercise. Rather than treat it as a standalone item, the QA mindset is embedded throughout every exercise above — exhaustive test suites, boundary conditions, error paths, and property-based testing where applicable. The RestaurantReviews dashboard also includes a dedicated security test suite covering injection, XSS, and input validation.
 
 ## Philosophy
 

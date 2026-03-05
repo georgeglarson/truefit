@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  cash-register:
+    name: CashRegister (Rust)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: CashRegister
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: CashRegister
+      - run: make test
+
+  missing-number:
+    name: MissingNumber (Zig)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: MissingNumber
+    steps:
+      - uses: actions/checkout@v4
+      - uses: mlugg/setup-zig@v1
+        with:
+          version: 0.14.1
+      - run: make test
+
+  morse-code:
+    name: MorseCode (Perl)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: MorseCode
+    steps:
+      - uses: actions/checkout@v4
+      - run: make test
+
+  on-screen-keyboard:
+    name: OnScreenKeyboard (Python)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: OnScreenKeyboard
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pytest
+      - run: make test
+
+  gilded-rose:
+    name: GildedRose (Go)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: GildedRose
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+      - run: make test
+
+  restaurant-reviews:
+    name: RestaurantReviews (TypeScript/React)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: RestaurantReviews
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: RestaurantReviews/package-lock.json
+      - run: npm ci
+      - run: make typecheck
+      - run: make test
