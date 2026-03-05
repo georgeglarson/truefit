@@ -79,6 +79,10 @@ src/
     └── __tests__/          # Component + integration tests
 ```
 
+## Design Note
+
+This directory started as the RestaurantReviews exercise, but as the unified dashboard took shape — integrating all 5 other exercises as live, interactive panels — it grew into the application shell for the entire project. If starting from scratch, the React app and Express server would live at the repository root. The current structure is retained because renaming mid-project carries more risk than benefit, and the history tells an honest story.
+
 ## Things To Consider
 
 - **SRP**: Models handle data access only. Routes handle HTTP concerns. Shared validation helpers (`routes/validate.ts`) eliminate duplication across entity routes. The subprocess runner is a generic utility shared by all exercise endpoints.
