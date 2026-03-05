@@ -117,7 +117,17 @@ function KeyboardViz({ output }: { output: string }) {
       <div style={s.typedRow}>
         <span style={s.typedLabel}>Output:</span>
         <span style={s.typedText}>
-          {typed || <span style={s.typedPlaceholder}>_</span>}
+          {typed ? (
+            typed.split("").map((ch, i) =>
+              ch === " " ? (
+                <span key={i} style={s.spaceChar}>{"\u2423"}</span>
+              ) : (
+                <span key={i}>{ch}</span>
+              )
+            )
+          ) : (
+            <span style={s.typedPlaceholder}>_</span>
+          )}
           <span style={s.cursor}>|</span>
         </span>
       </div>
@@ -153,8 +163,8 @@ function KeyboardViz({ output }: { output: string }) {
         {current.move === "D" && "\u2193 Down"}
         {current.move === "L" && "\u2190 Left"}
         {current.move === "R" && "\u2192 Right"}
-        {current.move === "#" && `Select "${current.selected}"`}
-        {current.move === "S" && "Space"}
+        {current.move === "#" && <><span style={{ color: "#22d3ee" }}>Select</span>{` "${current.selected}"`}</>}
+        {current.move === "S" && <span style={{ color: "#fbbf24" }}>{"\u2423"} Space</span>}
         <span style={s.stepCount}>{stepIdx}/{totalSteps - 1}</span>
       </div>
 
@@ -353,6 +363,10 @@ const s = {
   },
   typedPlaceholder: {
     color: "#334155",
+  },
+  spaceChar: {
+    color: "#475569",
+    margin: "0 1px",
   },
   cursor: {
     color: "#38bdf8",
