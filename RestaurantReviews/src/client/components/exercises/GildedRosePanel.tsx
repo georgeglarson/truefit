@@ -200,11 +200,12 @@ export function GildedRosePanel() {
             onChange={(e) => setInventory(e.target.value)}
             rows={8}
             style={styles.textarea}
+            aria-label="Inventory CSV"
           />
           <button onClick={handleStart} disabled={startApi.loading} style={styles.startBtn}>
             {startApi.loading ? "Starting..." : "Start Simulation"}
           </button>
-          {startApi.error && <div style={styles.error}>{startApi.error}</div>}
+          {startApi.error && <div role="alert" style={styles.error}>{startApi.error}</div>}
         </>
       ) : (
         <>
@@ -218,16 +219,16 @@ export function GildedRosePanel() {
             </button>
           </div>
 
-          {cmdApi.error && <div style={styles.error}>{cmdApi.error}</div>}
+          {cmdApi.error && <div role="alert" style={styles.error}>{cmdApi.error}</div>}
 
           <table style={styles.table}>
             <thead>
               <tr>
-                <th style={styles.th}>Item</th>
-                <th style={styles.th}>Category</th>
-                <th style={{ ...styles.th, textAlign: "right" }}>SellIn</th>
-                <th style={styles.th}>Quality</th>
-                <th style={{ ...styles.th, textAlign: "center", width: "50px" }}>{"\u0394"}</th>
+                <th scope="col" style={styles.th}>Item</th>
+                <th scope="col" style={styles.th}>Category</th>
+                <th scope="col" style={{ ...styles.th, textAlign: "right" }}>SellIn</th>
+                <th scope="col" style={styles.th}>Quality</th>
+                <th scope="col" style={{ ...styles.th, textAlign: "center", width: "50px" }}>{"\u0394"}</th>
               </tr>
             </thead>
             <tbody>

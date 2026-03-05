@@ -103,25 +103,28 @@ export function RestaurantSection({ refreshKey, onMutate }: Props) {
           onChange={(e) => setName(e.target.value)}
           placeholder="Name"
           style={styles.input}
+          aria-label="Restaurant name"
         />
         <input
           value={city}
           onChange={(e) => setCity(e.target.value)}
           placeholder="City"
           style={styles.input}
+          aria-label="City"
         />
         <input
           value={cuisine}
           onChange={(e) => setCuisine(e.target.value)}
           placeholder="Cuisine (optional)"
           style={styles.input}
+          aria-label="Cuisine"
         />
         <button onClick={handleCreate} disabled={createApi.loading} style={styles.btn}>
           {createApi.loading ? "Creating..." : "Create"}
         </button>
       </div>
-      {createApi.error && <div style={styles.error}>{createApi.error}</div>}
-      {updateApi.error && <div style={styles.error}>{updateApi.error}</div>}
+      {createApi.error && <div role="alert" style={styles.error}>{createApi.error}</div>}
+      {updateApi.error && <div role="alert" style={styles.error}>{updateApi.error}</div>}
 
       {listApi.loading && !listApi.data && (
         <div style={{ color: "#64748b", fontSize: "13px", padding: "16px 0" }}>
@@ -135,6 +138,7 @@ export function RestaurantSection({ refreshKey, onMutate }: Props) {
           onChange={(e) => setFilter(e.target.value)}
           placeholder="Filter by city..."
           style={styles.filterInput}
+          aria-label="Filter by city"
         />
         {filter && (
           <span style={styles.filterLabel}>
@@ -146,10 +150,10 @@ export function RestaurantSection({ refreshKey, onMutate }: Props) {
       <table style={styles.table}>
         <thead>
           <tr>
-            <th style={styles.th}>Name</th>
-            <th style={styles.th}>City</th>
-            <th style={styles.th}>Cuisine</th>
-            <th style={styles.th}>Actions</th>
+            <th scope="col" style={styles.th}>Name</th>
+            <th scope="col" style={styles.th}>City</th>
+            <th scope="col" style={styles.th}>Cuisine</th>
+            <th scope="col" style={styles.th}>Actions</th>
           </tr>
         </thead>
         <tbody>

@@ -105,19 +105,21 @@ export function UserSection({ refreshKey, onMutate }: Props) {
           onChange={(e) => setName(e.target.value)}
           placeholder="Name"
           style={styles.input}
+          aria-label="User name"
         />
         <input
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
           style={styles.input}
+          aria-label="Email"
         />
         <button onClick={handleCreate} disabled={createApi.loading} style={styles.btn}>
           {createApi.loading ? "Creating..." : "Create User"}
         </button>
       </div>
-      {createApi.error && <div style={styles.error}>{createApi.error}</div>}
-      {updateApi.error && <div style={styles.error}>{updateApi.error}</div>}
+      {createApi.error && <div role="alert" style={styles.error}>{createApi.error}</div>}
+      {updateApi.error && <div role="alert" style={styles.error}>{updateApi.error}</div>}
 
       {listApi.loading && !listApi.data && (
         <div style={{ color: "#64748b", fontSize: "13px", padding: "16px 0" }}>
@@ -128,10 +130,10 @@ export function UserSection({ refreshKey, onMutate }: Props) {
       <table style={styles.table}>
         <thead>
           <tr>
-            <th style={styles.th}>Name</th>
-            <th style={styles.th}>Email</th>
-            <th style={styles.th}>Status</th>
-            <th style={styles.th}>Actions</th>
+            <th scope="col" style={styles.th}>Name</th>
+            <th scope="col" style={styles.th}>Email</th>
+            <th scope="col" style={styles.th}>Status</th>
+            <th scope="col" style={styles.th}>Actions</th>
           </tr>
         </thead>
         <tbody>

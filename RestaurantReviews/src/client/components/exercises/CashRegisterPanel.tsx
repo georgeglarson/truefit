@@ -97,10 +97,11 @@ export function CashRegisterPanel() {
       {/* Add transaction form */}
       <div style={styles.addRow}>
         <div style={styles.inputGroup}>
-          <label style={styles.inputLabel}>Owed</label>
+          <label htmlFor="cash-owed" style={styles.inputLabel}>Owed</label>
           <div style={styles.dollarWrap}>
             <span style={styles.dollarSign}>$</span>
             <input
+              id="cash-owed"
               type="number"
               step="0.01"
               min="0.01"
@@ -113,10 +114,11 @@ export function CashRegisterPanel() {
           </div>
         </div>
         <div style={styles.inputGroup}>
-          <label style={styles.inputLabel}>Paid</label>
+          <label htmlFor="cash-paid" style={styles.inputLabel}>Paid</label>
           <div style={styles.dollarWrap}>
             <span style={styles.dollarSign}>$</span>
             <input
+              id="cash-paid"
               ref={paidRef}
               type="number"
               step="0.01"
@@ -201,7 +203,7 @@ export function CashRegisterPanel() {
         )}
       </div>
 
-      {error && <div style={styles.error}>{error}</div>}
+      {error && <div role="alert" style={styles.error}>{error}</div>}
     </div>
   );
 }

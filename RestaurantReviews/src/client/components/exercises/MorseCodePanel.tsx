@@ -104,6 +104,7 @@ export function MorseCodePanel() {
         }
         rows={6}
         style={styles.textarea}
+        aria-label={mode === "encode" ? "Text to encode" : "Morse code to decode"}
       />
 
       <div style={styles.buttonRow}>
@@ -117,7 +118,7 @@ export function MorseCodePanel() {
         )}
       </div>
 
-      {error && <div style={styles.error}>{error}</div>}
+      {error && <div role="alert" style={styles.error}>{error}</div>}
 
       {data && (
         <div style={styles.outputWrap}>
@@ -150,7 +151,7 @@ export function MorseCodePanel() {
           {morseOutput && audio.playing ? (
             <MorseHighlight morse={morseOutput} tokenIndex={audio.tokenIndex} />
           ) : (
-            <pre style={styles.output}>{data.output}</pre>
+            <pre role="status" aria-live="polite" style={styles.output}>{data.output}</pre>
           )}
         </div>
       )}

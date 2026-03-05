@@ -151,13 +151,14 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
           onChange={(e) => setBody(e.target.value)}
           placeholder="Comment (optional)"
           style={{ ...styles.input, minHeight: "36px", flex: 1 }}
+          aria-label="Comment"
         />
         <button onClick={handleCreate} disabled={createApi.loading} style={styles.btn}>
           {createApi.loading ? "Creating..." : "Create"}
         </button>
       </div>
-      {createApi.error && <div style={styles.error}>{createApi.error}</div>}
-      {updateApi.error && <div style={styles.error}>{updateApi.error}</div>}
+      {createApi.error && <div role="alert" style={styles.error}>{createApi.error}</div>}
+      {updateApi.error && <div role="alert" style={styles.error}>{updateApi.error}</div>}
 
       {listApi.loading && !listApi.data && (
         <div style={{ color: "#64748b", fontSize: "13px", padding: "16px 0" }}>
@@ -168,11 +169,11 @@ export function ReviewSection({ refreshKey, onMutate }: Props) {
       <table style={styles.table}>
         <thead>
           <tr>
-            <th style={styles.th}>User</th>
-            <th style={styles.th}>Restaurant</th>
-            <th style={styles.th}>Rating</th>
-            <th style={styles.th}>Comment</th>
-            <th style={styles.th}>Actions</th>
+            <th scope="col" style={styles.th}>User</th>
+            <th scope="col" style={styles.th}>Restaurant</th>
+            <th scope="col" style={styles.th}>Rating</th>
+            <th scope="col" style={styles.th}>Comment</th>
+            <th scope="col" style={styles.th}>Actions</th>
           </tr>
         </thead>
         <tbody>

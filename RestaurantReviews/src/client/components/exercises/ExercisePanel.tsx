@@ -50,15 +50,16 @@ export function ExercisePanel({
         placeholder={placeholder}
         rows={6}
         style={styles.textarea}
+        aria-label={`${title} input`}
       />
 
       <button onClick={handleRun} disabled={loading} style={styles.button}>
         {loading ? loadingLabel : buttonLabel}
       </button>
 
-      {error && <div style={styles.error}>{error}</div>}
+      {error && <div role="alert" style={styles.error}>{error}</div>}
 
-      {data && <pre style={styles.output}>{data.output}</pre>}
+      {data && <pre role="status" aria-live="polite" style={styles.output}>{data.output}</pre>}
     </div>
   );
 }

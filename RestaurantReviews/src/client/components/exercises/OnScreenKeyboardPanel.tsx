@@ -324,13 +324,14 @@ export function OnScreenKeyboardPanel() {
         placeholder="words to spell"
         rows={3}
         style={styles.textarea}
+        aria-label="Words to spell"
       />
 
       <button onClick={handleRun} disabled={loading} style={styles.button}>
         {loading ? "Spelling..." : "Spell It"}
       </button>
 
-      {error && <div style={styles.error}>{error}</div>}
+      {error && <div role="alert" style={styles.error}>{error}</div>}
 
       {data && (
         <>
