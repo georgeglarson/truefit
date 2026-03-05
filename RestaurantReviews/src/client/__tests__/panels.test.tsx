@@ -107,32 +107,56 @@ describe("MorseCodePanel mode switching", () => {
     expect(textarea.value).toBe("HELLO WORLD");
   });
 
-  it("switches to decode default text on Decode click", () => {
+  it("switches to decode with empty input when no output exists", () => {
     goToMorse();
     const decodeButtons = screen.getAllByText("Decode");
     fireEvent.click(decodeButtons[0]);
     const textarea = screen.getByRole("textbox") as HTMLTextAreaElement;
-    expect(textarea.value).toBe("....|.|.-..|.-..|---||||.--|---|-.|.-..|-..");
+    expect(textarea.value).toBe("");
   });
 
-  it("restores encode default text on Encode click", () => {
+  it("feeds encode output into decode input on mode switch", async () => {
+    goToMorse();
+    const morseOutput = "....|.|.-..|.-..|---||||.--|---|-.|.-..|-..|";
+    mockFetch.mockReturnValueOnce(jsonResponse({ output: morseOutput }));
+
+    // Encode first
+    const encodeButtons = screen.getAllByText("Encode");
+    fireEvent.click(encodeButtons[encodeButtons.length - 1]);
+    await waitFor(() => {
+      expect(screen.getByText(morseOutput)).toBeInTheDocument();
+    });
+
+    // Switch to decode — should prefill with encode output
+    const decodeButtons = screen.getAllByText("Decode");
+    fireEvent.click(decodeButtons[0]);
+    const textarea = screen.getByRole("textbox") as HTMLTextAreaElement;
+    expect(textarea.value).toBe(morseOutput);
+  });
+
+  it("restores encode default text on Encode click when no output", () => {
     goToMorse();
     const decodeButtons = screen.getAllByText("Decode");
     fireEvent.click(decodeButtons[0]);
     const encodeButtons = screen.getAllByText("Encode");
     fireEvent.click(encodeButtons[0]);
     const textarea = screen.getByRole("textbox") as HTMLTextAreaElement;
+    // When switching back with no prior output, feeds output if available, else keeps default
     expect(textarea.value).toBe("HELLO WORLD");
   });
 
   it("sends to correct endpoint based on mode", async () => {
     goToMorse();
+
+    // Type some morse manually so input is non-empty for decode
+    const textarea = screen.getByRole("textbox") as HTMLTextAreaElement;
+    const decodeButtons = screen.getAllByText("Decode");
+    fireEvent.click(decodeButtons[0]);
+    fireEvent.change(textarea, { target: { value: "....|.-.." } });
+
     mockFetch.mockReturnValueOnce(
       jsonResponse({ output: "decoded text" })
     );
-
-    const decodeButtons = screen.getAllByText("Decode");
-    fireEvent.click(decodeButtons[0]);
 
     const allDecodeButtons = screen.getAllByText("Decode");
     fireEvent.click(allDecodeButtons[allDecodeButtons.length - 1]);

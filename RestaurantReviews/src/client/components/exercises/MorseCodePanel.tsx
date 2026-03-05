@@ -15,6 +15,13 @@ export function MorseCodePanel() {
     });
   };
 
+  const handleSwap = () => {
+    if (!data?.output) return;
+    const newMode = mode === "encode" ? "decode" : "encode";
+    setInput(data.output);
+    setMode(newMode);
+  };
+
   return (
     <div style={styles.panel}>
       <h2 style={styles.title}>Morse Code</h2>
@@ -46,8 +53,10 @@ export function MorseCodePanel() {
       <div style={styles.modeToggle}>
         <button
           onClick={() => {
+            if (mode === "encode") return;
             setMode("encode");
-            setInput("HELLO WORLD");
+            if (data?.output) setInput(data.output);
+            else setInput("HELLO WORLD");
           }}
           style={{
             ...styles.modeBtn,
@@ -58,8 +67,10 @@ export function MorseCodePanel() {
         </button>
         <button
           onClick={() => {
+            if (mode === "decode") return;
             setMode("decode");
-            setInput("....|.|.-..|.-..|---||||.--|---|-.|.-..|-..");
+            if (data?.output) setInput(data.output);
+            else setInput("");
           }}
           style={{
             ...styles.modeBtn,
@@ -82,9 +93,16 @@ export function MorseCodePanel() {
         style={styles.textarea}
       />
 
-      <button onClick={handleRun} disabled={loading} style={styles.button}>
-        {loading ? "Running..." : mode === "encode" ? "Encode" : "Decode"}
-      </button>
+      <div style={styles.buttonRow}>
+        <button onClick={handleRun} disabled={loading} style={styles.button}>
+          {loading ? "Running..." : mode === "encode" ? "Encode" : "Decode"}
+        </button>
+        {data?.output && (
+          <button onClick={handleSwap} style={styles.swapBtn}>
+            {mode === "encode" ? "Decode result \u2192" : "\u2190 Encode result"}
+          </button>
+        )}
+      </div>
 
       {error && <div style={styles.error}>{error}</div>}
       {data && <pre style={styles.output}>{data.output}</pre>}
@@ -139,8 +157,13 @@ const styles = {
     resize: "vertical" as const,
     lineHeight: 1.5,
   },
-  button: {
+  buttonRow: {
+    display: "flex",
+    gap: "10px",
+    alignItems: "center",
     marginTop: "12px",
+  },
+  button: {
     padding: "10px 28px",
     background: "#2563eb",
     color: "#fff",
@@ -149,6 +172,16 @@ const styles = {
     cursor: "pointer",
     fontSize: "14px",
     fontWeight: 600,
+  },
+  swapBtn: {
+    padding: "8px 16px",
+    background: "transparent",
+    border: "1px solid #475569",
+    borderRadius: "8px",
+    color: "#94a3b8",
+    cursor: "pointer",
+    fontSize: "13px",
+    fontWeight: 500,
   },
   error: {
     marginTop: "12px",
