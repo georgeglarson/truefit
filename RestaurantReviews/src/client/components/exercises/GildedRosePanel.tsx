@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useApi } from "../../hooks/useApi.js";
 
-const DEFAULT_INVENTORY = `Name,Type,SellIn,Quality
-Aged Brie,Aged,2,0
+const DEFAULT_INVENTORY = `Aged Brie,Aged,2,0
 Elixir of the Mongoose,Normal,5,7
 Sulfuras Hand of Ragnaros,Legendary,0,80
 Backstage passes to a TAFKAL80ETC concert,BackstagePass,15,20
