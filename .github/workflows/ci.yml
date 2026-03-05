@@ -74,18 +74,15 @@ jobs:
       - run: make test
 
   restaurant-reviews:
-    name: RestaurantReviews (TypeScript/React)
+    name: Dashboard + RestaurantReviews (TypeScript/React)
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: RestaurantReviews
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: npm
-          cache-dependency-path: RestaurantReviews/package-lock.json
+          cache-dependency-path: package-lock.json
       - run: npm ci
       - run: make typecheck
       - run: make test

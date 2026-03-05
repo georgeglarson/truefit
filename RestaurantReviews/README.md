@@ -1,28 +1,15 @@
-# RestaurantReviews — TrueFit Code Challenge
+# RestaurantReviews
 
-A full-stack TypeScript/React application that implements the RestaurantReviews exercise **and** integrates all 5 other completed exercises as live, interactive panels in a unified dashboard.
+The RestaurantReviews exercise is implemented as part of the project-wide dashboard. The source code, server, and tests live at the **repository root**:
 
-## Architecture
-
-- **Express** backend with REST API for RestaurantReviews CRUD
-- **React** frontend (Vite) with a tabbed dashboard — one panel per exercise
-- **SQLite** (via `better-sqlite3`) for review persistence
-- **Subprocess runner** proxies the other 5 exercise binaries (Rust, Zig, Perl, Python, Go) as API endpoints
-
-## Prerequisites
-
-- **Node.js** >= 22.0.0
-- **Exercise binaries** must be built before starting the server:
-
-| Exercise | Language | Build command |
-|----------|----------|---------------|
-| CashRegister | Rust | `cd ../CashRegister && cargo build` |
-| MissingNumber | Zig | `cd ../MissingNumber && make build` |
-| MorseCode | Perl | No build step (interpreted) |
-| OnScreenKeyboard | Python | No build step (interpreted) |
-| GildedRose | Go | `cd ../GildedRose && make build` |
+- **Review models**: [`src/server/models/`](../src/server/models/)
+- **Review routes**: [`src/server/routes/`](../src/server/routes/)
+- **Review UI**: [`src/client/components/reviews/`](../src/client/components/reviews/)
+- **Tests**: [`src/server/__tests__/`](../src/server/__tests__/) and [`src/client/__tests__/`](../src/client/__tests__/)
 
 ## Quick Start
+
+From the **repository root**:
 
 ```sh
 make test    # 371 tests (server + client)
@@ -45,47 +32,9 @@ make dev     # dev mode: Express on :3000, Vite HMR on :5173
 
 Blocked users receive `403` when attempting to create reviews.
 
-## Exercise Proxy Endpoints
-
-Each exercise binary is wrapped as an API call:
-
-| Exercise | Endpoint | Method |
-|----------|----------|--------|
-| CashRegister | `/api/exercises/cash-register` | POST |
-| MissingNumber | `/api/exercises/missing-number` | POST |
-| MorseCode | `/api/exercises/morse-code/encode`, `/decode` | POST |
-| OnScreenKeyboard | `/api/exercises/on-screen-keyboard` | POST |
-| GildedRose | `/api/exercises/gilded-rose/start`, `/:id/command` | POST |
-
-## Project Structure
-
-```
-src/
-├── server/
-│   ├── app.ts              # Express factory (testable)
-│   ├── index.ts            # Bootstrap + listen
-│   ├── db/                 # SQLite connection + schema
-│   ├── models/             # User, Restaurant, Review CRUD
-│   ├── routes/             # REST route handlers + shared validation
-│   ├── exercises/          # Subprocess runner + per-exercise endpoints
-│   ├── middleware/         # Error handler, rate limiting
-│   └── __tests__/          # Server tests (supertest + in-memory SQLite)
-└── client/
-    ├── App.tsx             # Tabbed shell
-    ├── components/
-    │   ├── exercises/      # One panel per exercise
-    │   └── reviews/        # User/Restaurant/Review forms + tables
-    ├── hooks/              # useApi fetch wrapper, useMorseAudio
-    └── __tests__/          # Component + integration tests
-```
-
-## Design Note
-
-This directory started as the RestaurantReviews exercise, but as the unified dashboard took shape — integrating all 5 other exercises as live, interactive panels — it grew into the application shell for the entire project. If starting from scratch, the React app and Express server would live at the repository root. The current structure is retained because renaming mid-project carries more risk than benefit, and the history tells an honest story.
-
 ## Things To Consider
 
 - **SRP**: Models handle data access only. Routes handle HTTP concerns. Shared validation helpers (`routes/validate.ts`) eliminate duplication across entity routes. The subprocess runner is a generic utility shared by all exercise endpoints.
-- **Testability**: The Express app is a factory function accepting a database instance — tests use in-memory SQLite with zero file I/O. Exercise endpoints mock the subprocess runner.
+- **Testability**: The Express app is a factory function accepting a database instance -- tests use in-memory SQLite with zero file I/O. Exercise endpoints mock the subprocess runner.
 - **Extensibility**: Adding a new exercise means one route file and one line in `app.ts`. Adding a new review entity means one model and one route.
-- **The "larger system" claim**: Every exercise says to approach it as part of a larger system. This dashboard *is* that system — all 5 exercises are live, callable panels in a real application.
+- **The "larger system" claim**: Every exercise says to approach it as part of a larger system. The dashboard *is* that system -- all 6 exercises are live, callable panels in a real application.

@@ -38,16 +38,26 @@ Each exercise's `make test` and `make run` will also check for their specific de
 
 ## Running Exercises
 
+Each standalone exercise:
+
 ```sh
 cd <ExerciseName>
 make test    # run the full test suite (always verbose)
 make run     # run against sample input
 ```
 
-Or run everything from the root:
+The dashboard (RestaurantReviews + all exercise panels) runs from the project root:
 
 ```sh
-make test-all    # runs all test suites in sequence
+make test    # 371 tests (server + client)
+make run     # builds and starts Express on http://localhost:3000
+make dev     # dev mode: Express on :3000, Vite HMR on :5173
+```
+
+Or run all test suites in sequence:
+
+```sh
+make test-all
 ```
 
 ## DavesSnackShack

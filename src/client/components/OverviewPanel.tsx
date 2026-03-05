@@ -69,23 +69,22 @@ export function OverviewPanel({ onNavigate }: Props) {
     <div style={styles.panel}>
       <h2 style={styles.title}>Overview</h2>
       <p style={styles.desc}>
-        Six exercises, six languages, each chosen to match the problem domain.
-        Every exercise says to approach it as part of a larger system &mdash; this dashboard is
-        that system.
+        Six exercises, six languages &mdash; each language chosen to fit the problem it solves.
+        Every exercise prompt suggests approaching it as part of a larger system, so this dashboard
+        ties them all together.
       </p>
 
       <div style={styles.philosophy}>
-        <div style={styles.philHeading}>Philosophy</div>
+        <div style={styles.philHeading}>Approach</div>
         <p style={styles.philText}>
-          Language choice is a design decision, not a default. Each exercise below uses the language
-          that best fits its problem domain &mdash; from Rust&rsquo;s zero-cost abstractions for
-          financial math to Perl&rsquo;s text-processing dominance for Morse code. The goal is to
-          demonstrate breadth and the ability to pick the right tool for the job.
+          Each exercise uses a language suited to its problem domain &mdash; Rust for
+          financial math, Perl for text processing, Go for interface-driven business rules, and so
+          on. The table below explains the reasoning behind each choice.
         </p>
         <p style={styles.philText}>
-          Single Responsibility Principle is enforced throughout &mdash; parsing, logic,
-          orchestration, and I/O are always in separate modules. Test suites are exhaustive enough
-          that a reviewer has nothing left to question.
+          Across all exercises, parsing, logic, orchestration, and I/O are kept in separate modules.
+          Test suites aim to be thorough enough that edge cases and error paths are covered
+          alongside the happy path.
         </p>
       </div>
 
@@ -136,8 +135,8 @@ export function OverviewPanel({ onNavigate }: Props) {
       </div>
 
       <p style={styles.footnote}>
-        Click any exercise name above to try it live. Each panel includes a context box explaining
-        the problem, solution approach, and test coverage.
+        Click any exercise name to try it live. Each panel includes context on the problem,
+        solution approach, and test coverage.
       </p>
     </div>
   );

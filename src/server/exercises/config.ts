@@ -1,6 +1,6 @@
 import path from "path";
 
-const ROOT = path.resolve(import.meta.dirname, "../../../../");
+const ROOT = path.resolve(import.meta.dirname, "../../../");
 
 export const EXERCISE_PATHS = {
   cashRegister: path.join(ROOT, "CashRegister/target/debug/cash-register"),
