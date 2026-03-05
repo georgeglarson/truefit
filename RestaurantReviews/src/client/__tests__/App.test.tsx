@@ -216,25 +216,31 @@ describe("OnScreenKeyboardPanel", () => {
 });
 
 describe("GildedRosePanel", () => {
-  it("renders start session form", () => {
+  it("renders start simulation form", () => {
     mockInitialLoads();
     render(<App />);
     fireEvent.click(screen.getByText("Gilded Rose", { selector: "button" }));
-    expect(screen.getByText("Start Session")).toBeInTheDocument();
+    expect(screen.getByText("Start Simulation")).toBeInTheDocument();
   });
 
-  it("starts a session and shows command input", async () => {
+  it("starts a session and shows day controls", async () => {
     mockInitialLoads();
     render(<App />);
     fireEvent.click(screen.getByText("Gilded Rose", { selector: "button" }));
-    mockFetch.mockReturnValueOnce(
-      jsonResponse({ sessionId: "test-123", day: 0 })
-    );
+    mockFetch
+      .mockReturnValueOnce(jsonResponse({ sessionId: "test-123", day: 0 }))
+      .mockReturnValueOnce(
+        jsonResponse({
+          output: "Aged Brie (Aged) — SellIn: 2, Quality: 0",
+          day: 0,
+        })
+      );
 
-    fireEvent.click(screen.getByText("Start Session"));
+    fireEvent.click(screen.getByText("Start Simulation"));
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText(/list, next/)).toBeInTheDocument();
+      expect(screen.getByText("Day 0")).toBeInTheDocument();
+      expect(screen.getByText(/Next Day/)).toBeInTheDocument();
     });
   });
 });

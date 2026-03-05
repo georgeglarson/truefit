@@ -654,29 +654,24 @@ describe("ReviewsPanel — cross-section refresh", () => {
 // ── GildedRose session interaction ──────────────────────────────────
 
 describe("GildedRosePanel — session interaction", () => {
-  it("sends command and displays output", async () => {
+  it("starts simulation, parses items, and shows data table", async () => {
     mockInitialLoads();
     render(<App />);
     fireEvent.click(screen.getByText("Gilded Rose", { selector: "button[role='tab']" }));
 
-    mockFetch.mockReturnValueOnce(
-      jsonResponse({ sessionId: "abc-123", day: 0 })
-    );
-    fireEvent.click(screen.getByText("Start Session"));
+    mockFetch
+      .mockReturnValueOnce(jsonResponse({ sessionId: "abc-123", day: 0 }))
+      .mockReturnValueOnce(
+        jsonResponse({
+          output: "Aged Brie (Aged) — SellIn: 2, Quality: 0\nElixir of the Mongoose (Normal) — SellIn: 5, Quality: 7",
+          day: 0,
+        })
+      );
+    fireEvent.click(screen.getByText("Start Simulation"));
 
     await waitFor(() => {
-      expect(screen.getByPlaceholderText(/list, next/)).toBeInTheDocument();
-    });
-
-    mockFetch.mockReturnValueOnce(
-      jsonResponse({ output: "Item1 - SellIn: 5, Quality: 10", day: 1 })
-    );
-    const input = screen.getByPlaceholderText(/list, next/);
-    await userEvent.type(input, "list");
-    fireEvent.click(screen.getByText("Send"));
-
-    await waitFor(() => {
-      expect(screen.getByText(/Item1 - SellIn: 5/)).toBeInTheDocument();
+      expect(screen.getByText("Aged Brie")).toBeInTheDocument();
+      expect(screen.getByText("Elixir of the Mongoose")).toBeInTheDocument();
     });
   });
 
@@ -685,20 +680,24 @@ describe("GildedRosePanel — session interaction", () => {
     render(<App />);
     fireEvent.click(screen.getByText("Gilded Rose", { selector: "button[role='tab']" }));
 
-    mockFetch.mockReturnValueOnce(
-      jsonResponse({ sessionId: "abc-123", day: 0 })
-    );
-    fireEvent.click(screen.getByText("Start Session"));
+    mockFetch
+      .mockReturnValueOnce(jsonResponse({ sessionId: "abc-123", day: 0 }))
+      .mockReturnValueOnce(
+        jsonResponse({
+          output: "Aged Brie (Aged) — SellIn: 2, Quality: 0",
+          day: 0,
+        })
+      );
+    fireEvent.click(screen.getByText("Start Simulation"));
 
     await waitFor(() => {
-      expect(screen.getByText("End Session")).toBeInTheDocument();
+      expect(screen.getByText("End")).toBeInTheDocument();
     });
 
-    mockFetch.mockReturnValueOnce(noContentResponse());
-    fireEvent.click(screen.getByText("End Session"));
+    fireEvent.click(screen.getByText("End"));
 
     await waitFor(() => {
-      expect(screen.getByText("Start Session")).toBeInTheDocument();
+      expect(screen.getByText("Start Simulation")).toBeInTheDocument();
     });
 
     expect(mockFetch).toHaveBeenCalledWith(
