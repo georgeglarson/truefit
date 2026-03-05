@@ -1,0 +1,2 @@
+# Mark generated files so GitHub's language stats reflect actual code
+RestaurantReviews/package-lock.json linguist-generated=true
