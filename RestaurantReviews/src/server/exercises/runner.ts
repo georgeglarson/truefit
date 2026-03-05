@@ -10,6 +10,7 @@ export interface RunResult {
   stdout: string;
   stderr: string;
   exitCode: number;
+  truncated: boolean;
 }
 
 /**
@@ -23,7 +24,7 @@ export async function runWithFile(
   options: { interpreter?: string; timeout?: number } = {}
 ): Promise<RunResult> {
   if (Buffer.byteLength(input, "utf-8") > MAX_INPUT_BYTES) {
-    return { stdout: "", stderr: "Input too large", exitCode: 1 };
+    return { stdout: "", stderr: "Input too large", exitCode: 1, truncated: false };
   }
 
   const dir = await mkdtemp(path.join(tmpdir(), "exercise-"));
@@ -70,6 +71,7 @@ export function spawnAndCapture(
         stdout: Buffer.concat(stdoutChunks).toString("utf-8"),
         stderr: Buffer.concat(stderrChunks).toString("utf-8"),
         exitCode: code ?? 1,
+        truncated: stdoutLen > MAX_OUTPUT_BYTES || stderrLen > MAX_OUTPUT_BYTES,
       });
     });
   });

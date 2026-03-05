@@ -128,4 +128,19 @@ describe("spawnAndCapture", () => {
     expect(result.stdout).toBe("");
     expect(result.stderr).toBe("");
   });
+
+  it("sets truncated to false for small output", async () => {
+    const result = await spawnAndCapture("/bin/echo", ["hello"]);
+    expect(result.truncated).toBe(false);
+  });
+
+  it("sets truncated to true when stdout exceeds 256 KB", async () => {
+    // Generate 300 KB of output via dd
+    const result = await spawnAndCapture("/bin/dd", [
+      "if=/dev/zero",
+      "bs=1024",
+      "count=300",
+    ]);
+    expect(result.truncated).toBe(true);
+  });
 });
