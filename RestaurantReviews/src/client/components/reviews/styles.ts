@@ -1,20 +1,33 @@
 import type { CSSProperties } from "react";
 
 export const styles: Record<string, CSSProperties> = {
-  panel: { padding: "24px" },
-  title: { fontSize: "24px", marginBottom: "8px", color: "#f1f5f9" },
-  desc: { color: "#94a3b8", marginBottom: "16px", fontSize: "14px" },
+  panel: { padding: "28px 32px" },
+  title: {
+    fontSize: "22px",
+    fontWeight: 700,
+    marginBottom: "6px",
+    color: "#f1f5f9",
+    letterSpacing: "-0.01em",
+  },
+  desc: {
+    color: "#94a3b8",
+    marginBottom: "20px",
+    fontSize: "14px",
+    lineHeight: 1.6,
+  },
   grid: { display: "flex", flexDirection: "column", gap: "24px" },
   section: {
-    padding: "16px",
+    padding: "18px",
     background: "#1e293b",
     borderRadius: "8px",
     border: "1px solid #334155",
   },
   sectionTitle: {
-    fontSize: "16px",
-    marginBottom: "12px",
+    fontSize: "15px",
+    fontWeight: 600,
+    marginBottom: "14px",
     color: "#38bdf8",
+    letterSpacing: "-0.01em",
   },
   form: {
     display: "flex",
@@ -132,16 +145,17 @@ export const styles: Record<string, CSSProperties> = {
   },
   th: {
     textAlign: "left",
-    padding: "8px",
+    padding: "8px 10px",
     borderBottom: "2px solid #334155",
-    color: "#94a3b8",
-    fontSize: "12px",
-    fontWeight: 600,
+    color: "#64748b",
+    fontSize: "11px",
+    fontWeight: 700,
     textTransform: "uppercase",
+    letterSpacing: "0.05em",
   },
   td: {
-    padding: "8px",
-    borderBottom: "1px solid #334155",
+    padding: "8px 10px",
+    borderBottom: "1px solid rgba(51, 65, 85, 0.5)",
     color: "#cbd5e1",
   },
   editInput: {
@@ -170,10 +184,11 @@ export const styles: Record<string, CSSProperties> = {
   },
   statusBadge: {
     padding: "2px 8px",
-    borderRadius: "4px",
+    borderRadius: "10px",
     fontSize: "11px",
     fontWeight: 600,
     textTransform: "uppercase",
+    letterSpacing: "0.03em",
   },
   emptyRow: {
     padding: "16px 8px",

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useApi } from "../../hooks/useApi.js";
+import { ContextBox, Lang, Stat } from "../ContextBox.js";
 
 export function MorseCodePanel() {
   const [input, setInput] = useState("HELLO WORLD");
@@ -22,28 +23,25 @@ export function MorseCodePanel() {
         separator and |||| as word separator when decoding.
       </p>
 
-      <div style={styles.contextBox}>
-        <div style={styles.contextHeading}>The Challenge</div>
-        <p style={styles.contextText}>
+      <ContextBox>
+        <ContextBox.Section heading="Problem">
           Build a bidirectional Morse code translator that handles encoding (text to Morse)
           and decoding (Morse to text), including multi-word messages with proper delimiter hierarchy.
-        </p>
-        <div style={styles.contextHeading}>Our Solution</div>
-        <p style={styles.contextText}>
-          <strong style={styles.contextLang}>Perl</strong> &mdash; A text-processing problem at its
+        </ContextBox.Section>
+        <ContextBox.Section heading="Solution">
+          <Lang>Perl</Lang> &mdash; A text-processing problem at its
           core &mdash; splitting on delimiters and mapping through a lookup table. Perl is <em>the</em> language
           for this domain. The solution uses a three-tier delimiter hierarchy
           (dot for signals, pipe-pair for letters, quad-pipe for words) and builds both encoder and
           decoder from a single authoritative lookup table.
-        </p>
-        <div style={styles.contextHeading}>Testing</div>
-        <p style={styles.contextText}>
-          <strong style={styles.contextStat}>195 tests</strong> &mdash; covers every letter A&ndash;Z,
+        </ContextBox.Section>
+        <ContextBox.Section heading="Testing">
+          <Stat>195 tests</Stat> &mdash; covers every letter A&ndash;Z,
           digits 0&ndash;9, all supported punctuation, multi-word encoding/decoding, full round-trip
           verification (encode then decode returns original), edge cases like empty input,
           unknown characters, and malformed Morse sequences.
-        </p>
-      </div>
+        </ContextBox.Section>
+      </ContextBox>
 
       <div style={styles.modeToggle}>
         <button
@@ -95,81 +93,81 @@ export function MorseCodePanel() {
 }
 
 const styles = {
-  panel: { padding: "24px", maxWidth: "800px" },
-  title: { fontSize: "24px", marginBottom: "8px", color: "#f1f5f9" },
-  desc: { color: "#94a3b8", marginBottom: "16px", fontSize: "14px" },
-  contextBox: {
-    padding: "12px 16px",
-    background: "#1e293b",
-    border: "1px solid #334155",
-    borderRadius: "6px",
-    marginBottom: "16px",
-    fontSize: "13px",
-    color: "#cbd5e1",
-    lineHeight: "1.6",
+  panel: { padding: "28px 32px" },
+  title: {
+    fontSize: "22px",
+    fontWeight: 700,
+    marginBottom: "6px",
+    color: "#f1f5f9",
+    letterSpacing: "-0.01em",
   },
-  contextHeading: {
-    fontSize: "13px",
-    fontWeight: 600,
+  desc: {
     color: "#94a3b8",
-    textTransform: "uppercase" as const,
-    letterSpacing: "0.05em",
-    marginBottom: "4px",
-    marginTop: "8px",
+    marginBottom: "20px",
+    fontSize: "14px",
+    lineHeight: 1.6,
   },
-  contextText: { margin: "0 0 8px 0" } as const,
-  contextLang: { color: "#38bdf8" },
-  contextStat: { color: "#4ade80" },
-  modeToggle: { display: "flex", gap: "4px", marginBottom: "12px" },
+  modeToggle: {
+    display: "flex",
+    gap: "4px",
+    marginBottom: "12px",
+  },
   modeBtn: {
-    padding: "6px 16px",
+    padding: "8px 20px",
     border: "1px solid #334155",
-    borderRadius: "6px",
+    borderRadius: "8px",
     background: "transparent",
     color: "#94a3b8",
     cursor: "pointer",
     fontSize: "13px",
+    fontWeight: 500,
   },
-  modeActive: { background: "#1e40af", color: "#fff", borderColor: "#2563eb" },
+  modeActive: {
+    background: "#1e40af",
+    color: "#fff",
+    borderColor: "#2563eb",
+  },
   textarea: {
     width: "100%",
-    padding: "12px",
-    background: "#1e293b",
+    padding: "12px 14px",
+    background: "#0f172a",
     border: "1px solid #334155",
-    borderRadius: "6px",
+    borderRadius: "8px",
     color: "#e2e8f0",
     fontFamily: "monospace",
     fontSize: "14px",
     resize: "vertical" as const,
+    lineHeight: 1.5,
   },
   button: {
     marginTop: "12px",
-    padding: "8px 24px",
+    padding: "10px 28px",
     background: "#2563eb",
     color: "#fff",
     border: "none",
-    borderRadius: "6px",
+    borderRadius: "8px",
     cursor: "pointer",
     fontSize: "14px",
     fontWeight: 600,
   },
   error: {
     marginTop: "12px",
-    padding: "12px",
+    padding: "12px 14px",
     background: "#7f1d1d",
-    borderRadius: "6px",
+    borderRadius: "8px",
     color: "#fca5a5",
-    fontSize: "14px",
+    fontSize: "13px",
   },
   output: {
-    marginTop: "12px",
+    marginTop: "16px",
     padding: "16px",
-    background: "#1e293b",
+    background: "#0f172a",
     border: "1px solid #334155",
-    borderRadius: "6px",
+    borderRadius: "8px",
     color: "#a5f3fc",
     fontFamily: "monospace",
     fontSize: "14px",
     whiteSpace: "pre-wrap" as const,
+    lineHeight: 1.5,
   },
 };

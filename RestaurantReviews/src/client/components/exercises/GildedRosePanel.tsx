@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useApi } from "../../hooks/useApi.js";
+import { ContextBox, Lang, Stat, Code } from "../ContextBox.js";
 
 const DEFAULT_INVENTORY = `Aged Brie,Aged,2,0
 Elixir of the Mongoose,Normal,5,7
@@ -70,27 +71,24 @@ export function GildedRosePanel() {
         days to watch the rules play out.
       </p>
 
-      <div style={styles.contextBox}>
-        <div style={styles.contextHeading}>The Challenge</div>
-        <p style={styles.contextText}>
+      <ContextBox>
+        <ContextBox.Section heading="Problem">
           Implement a system where shop inventory items degrade (or improve) in Quality
           each day according to category-specific rules &mdash; a classic polymorphism and
           business logic problem with 5 distinct item behaviors.
-        </p>
-        <div style={styles.contextHeading}>Our Solution</div>
-        <p style={styles.contextText}>
-          <strong style={styles.contextLang}>Go</strong> &mdash; Go's interface system is a natural fit.
-          Each item category implements a single <code style={styles.code}>Updater</code> interface, and a
+        </ContextBox.Section>
+        <ContextBox.Section heading="Solution">
+          <Lang>Go</Lang> &mdash; Go's interface system is a natural fit.
+          Each item category implements a single <Code>Updater</Code> interface, and a
           registry pattern makes adding new item rules a one-file addition. Go's simplicity forces
           clean design without hiding behind language features.
-        </p>
-        <div style={styles.contextHeading}>Testing</div>
-        <p style={styles.contextText}>
-          <strong style={styles.contextStat}>75 tests</strong> &mdash; covers all 5 category rules
+        </ContextBox.Section>
+        <ContextBox.Section heading="Testing">
+          <Stat>75 tests</Stat> &mdash; covers all 5 category rules
           (Normal, Aged, Legendary, BackstagePass, Conjured), boundary conditions at Quality 0 and 50,
           SellIn expiration behavior, multi-day progression, and edge cases like negative SellIn values.
-        </p>
-      </div>
+        </ContextBox.Section>
+      </ContextBox>
 
       {!sessionId ? (
         <>
@@ -103,7 +101,7 @@ export function GildedRosePanel() {
               <div><strong style={styles.cat}>BackstagePass</strong> &mdash; Quality rises as the concert nears: +2 at 10 days, +3 at 5 days, drops to 0 after</div>
               <div><strong style={styles.cat}>Conjured</strong> &mdash; Degrades twice as fast as Normal items</div>
             </div>
-            <div style={{ marginTop: "8px", color: "#64748b", fontSize: "12px" }}>
+            <div style={styles.rulesNote}>
               Quality is always 0&ndash;50 (except Legendary at 80).
             </div>
           </div>
@@ -175,53 +173,47 @@ export function GildedRosePanel() {
 }
 
 const styles = {
-  panel: { padding: "24px", maxWidth: "800px" },
-  title: { fontSize: "24px", marginBottom: "8px", color: "#f1f5f9" },
-  desc: { color: "#94a3b8", marginBottom: "16px", fontSize: "14px" },
-  contextBox: {
-    padding: "12px 16px",
-    background: "#1e293b",
-    border: "1px solid #334155",
-    borderRadius: "6px",
-    marginBottom: "16px",
-    fontSize: "13px",
-    color: "#cbd5e1",
-    lineHeight: "1.6",
+  panel: { padding: "28px 32px" },
+  title: {
+    fontSize: "22px",
+    fontWeight: 700,
+    marginBottom: "6px",
+    color: "#f1f5f9",
+    letterSpacing: "-0.01em",
   },
-  contextHeading: {
-    fontSize: "13px",
-    fontWeight: 600,
+  desc: {
     color: "#94a3b8",
-    textTransform: "uppercase" as const,
-    letterSpacing: "0.05em",
-    marginBottom: "4px",
-    marginTop: "8px",
+    marginBottom: "20px",
+    fontSize: "14px",
+    lineHeight: 1.6,
   },
-  contextText: { margin: "0 0 8px 0" } as const,
-  contextLang: { color: "#38bdf8" },
-  contextStat: { color: "#4ade80" },
   rulesBox: {
-    padding: "12px 16px",
-    background: "#1e293b",
+    padding: "14px 18px",
+    background: "linear-gradient(135deg, #1e293b 0%, #1a2536 100%)",
     border: "1px solid #334155",
-    borderRadius: "6px",
+    borderRadius: "8px",
     marginBottom: "16px",
     fontSize: "13px",
     color: "#cbd5e1",
-    lineHeight: "1.6",
+    lineHeight: 1.7,
   },
   rulesTitle: {
-    fontSize: "13px",
-    fontWeight: 600,
-    color: "#94a3b8",
+    fontSize: "11px",
+    fontWeight: 700,
+    color: "#64748b",
     textTransform: "uppercase" as const,
-    letterSpacing: "0.05em",
+    letterSpacing: "0.08em",
     marginBottom: "6px",
   },
   rulesGrid: {
     display: "flex",
     flexDirection: "column" as const,
     gap: "4px",
+  },
+  rulesNote: {
+    marginTop: "8px",
+    color: "#64748b",
+    fontSize: "12px",
   },
   cat: { color: "#38bdf8" },
   csvLabel: {
@@ -235,41 +227,44 @@ const styles = {
     borderRadius: "4px",
     fontSize: "12px",
     color: "#e2e8f0",
+    fontFamily: "monospace",
   },
   textarea: {
     width: "100%",
-    padding: "12px",
-    background: "#1e293b",
+    padding: "12px 14px",
+    background: "#0f172a",
     border: "1px solid #334155",
-    borderRadius: "6px",
+    borderRadius: "8px",
     color: "#e2e8f0",
     fontFamily: "monospace",
     fontSize: "14px",
     resize: "vertical" as const,
+    lineHeight: 1.5,
   },
   button: {
     marginTop: "12px",
-    padding: "8px 24px",
+    padding: "10px 28px",
     background: "#2563eb",
     color: "#fff",
     border: "none",
-    borderRadius: "6px",
+    borderRadius: "8px",
     cursor: "pointer",
     fontSize: "14px",
     fontWeight: 600,
   },
   error: {
     marginTop: "12px",
-    padding: "12px",
+    padding: "12px 14px",
     background: "#7f1d1d",
-    borderRadius: "6px",
+    borderRadius: "8px",
     color: "#fca5a5",
+    fontSize: "13px",
   },
   log: {
     padding: "16px",
-    background: "#1e293b",
+    background: "#0f172a",
     border: "1px solid #334155",
-    borderRadius: "6px",
+    borderRadius: "8px",
     color: "#a5f3fc",
     fontFamily: "monospace",
     fontSize: "13px",
@@ -277,6 +272,7 @@ const styles = {
     maxHeight: "400px",
     overflowY: "auto" as const,
     marginBottom: "12px",
+    lineHeight: 1.5,
   },
   cmdRow: {
     display: "flex",
@@ -288,34 +284,37 @@ const styles = {
     fontFamily: "monospace",
     fontSize: "14px",
     whiteSpace: "nowrap" as const,
+    fontWeight: 600,
   },
   input: {
     flex: 1,
-    padding: "8px 12px",
-    background: "#1e293b",
+    padding: "10px 14px",
+    background: "#0f172a",
     border: "1px solid #334155",
-    borderRadius: "6px",
+    borderRadius: "8px",
     color: "#e2e8f0",
     fontFamily: "monospace",
     fontSize: "14px",
   },
   sendBtn: {
-    padding: "8px 16px",
+    padding: "10px 20px",
     background: "#2563eb",
     color: "#fff",
     border: "none",
-    borderRadius: "6px",
+    borderRadius: "8px",
     cursor: "pointer",
     fontSize: "14px",
+    fontWeight: 600,
   },
   resetBtn: {
     marginTop: "12px",
-    padding: "6px 16px",
+    padding: "8px 20px",
     background: "transparent",
     border: "1px solid #475569",
-    borderRadius: "6px",
+    borderRadius: "8px",
     color: "#94a3b8",
     cursor: "pointer",
     fontSize: "13px",
+    fontWeight: 500,
   },
 };

@@ -17,20 +17,23 @@ interface Props {
 export function TabNav({ activeTab, onTabChange }: Props) {
   return (
     <nav style={styles.nav} role="tablist" aria-label="Exercise panels">
-      {TABS.map((tab) => (
-        <button
-          key={tab.id}
-          role="tab"
-          aria-selected={activeTab === tab.id}
-          onClick={() => onTabChange(tab.id)}
-          style={{
-            ...styles.tab,
-            ...(activeTab === tab.id ? styles.active : {}),
-          }}
-        >
-          {tab.label}
-        </button>
-      ))}
+      {TABS.map((tab) => {
+        const isActive = activeTab === tab.id;
+        return (
+          <button
+            key={tab.id}
+            role="tab"
+            aria-selected={isActive}
+            onClick={() => onTabChange(tab.id)}
+            style={{
+              ...styles.tab,
+              ...(isActive ? styles.active : {}),
+            }}
+          >
+            {tab.label}
+          </button>
+        );
+      })}
     </nav>
   );
 }
@@ -38,25 +41,31 @@ export function TabNav({ activeTab, onTabChange }: Props) {
 const styles = {
   nav: {
     display: "flex",
-    gap: "4px",
-    padding: "8px 16px",
+    gap: "2px",
+    padding: "0 20px",
     background: "#1e293b",
     borderBottom: "1px solid #334155",
     flexWrap: "wrap" as const,
+    position: "sticky" as const,
+    top: 0,
+    zIndex: 10,
   },
   tab: {
-    padding: "8px 16px",
+    padding: "12px 18px",
     border: "none",
-    borderRadius: "6px 6px 0 0",
+    borderBottomWidth: "2px",
+    borderBottomStyle: "solid" as const,
+    borderBottomColor: "transparent",
     background: "transparent",
-    color: "#94a3b8",
+    color: "#64748b",
     cursor: "pointer",
-    fontSize: "14px",
+    fontSize: "13px",
     fontWeight: 500,
+    letterSpacing: "0.01em",
+    whiteSpace: "nowrap" as const,
   },
   active: {
-    background: "#0f172a",
-    color: "#38bdf8",
-    borderBottom: "2px solid #38bdf8",
+    color: "#f1f5f9",
+    borderBottomColor: "#38bdf8",
   },
 };
