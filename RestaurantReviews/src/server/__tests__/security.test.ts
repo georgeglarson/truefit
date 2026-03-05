@@ -101,7 +101,7 @@ describe("Cash Register argument validation", () => {
 
   it("accepts valid 3-letter uppercase currency", async () => {
     const app = freshApp();
-    mockRunWithFile.mockResolvedValue({ stdout: "ok\n", stderr: "", exitCode: 0 });
+    mockRunWithFile.mockResolvedValue({ stdout: "ok\n", stderr: "", exitCode: 0, truncated: false });
     const res = await request(app)
       .post("/api/exercises/cash-register")
       .send({ input: "1.00,2.00\n", currency: "EUR" });
@@ -114,7 +114,7 @@ describe("Cash Register argument validation", () => {
 
   it("accepts valid integer seed and divisor", async () => {
     const app = freshApp();
-    mockRunWithFile.mockResolvedValue({ stdout: "ok\n", stderr: "", exitCode: 0 });
+    mockRunWithFile.mockResolvedValue({ stdout: "ok\n", stderr: "", exitCode: 0, truncated: false });
     const res = await request(app)
       .post("/api/exercises/cash-register")
       .send({ input: "1.00,2.00\n", seed: 42, divisor: 3 });
@@ -132,6 +132,7 @@ describe("Stderr suppression in exercise responses", () => {
       stdout: "",
       stderr: "/usr/local/bin/cash-register: segfault at 0x7fff",
       exitCode: 139,
+      truncated: false,
     });
 
     const res = await request(app).post("/api/exercises/cash-register").send({ input: "bad\n" });
@@ -153,6 +154,7 @@ describe("Stderr suppression in exercise responses", () => {
       stdout: "",
       stderr: "panic: index out of bounds",
       exitCode: 1,
+      truncated: false,
     });
 
     const res = await request(app).post("/api/exercises/missing-number").send({ input: "bad" });
@@ -169,6 +171,7 @@ describe("Stderr suppression in exercise responses", () => {
       stdout: "",
       stderr: "error at line 42",
       exitCode: 1,
+      truncated: false,
     });
 
     const res = await request(app).post("/api/exercises/morse-code/encode").send({ input: "bad" });
@@ -185,6 +188,7 @@ describe("Stderr suppression in exercise responses", () => {
       stdout: "",
       stderr: "Traceback (most recent call last):\n  File ...",
       exitCode: 1,
+      truncated: false,
     });
 
     const res = await request(app).post("/api/exercises/on-screen-keyboard").send({ input: "bad" });

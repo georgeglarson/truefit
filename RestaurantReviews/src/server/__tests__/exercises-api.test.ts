@@ -30,6 +30,7 @@ describe("POST /api/exercises/cash-register", () => {
       stdout: "Quarter:3,Dime:1,Nickel:0,Penny:3\n",
       stderr: "",
       exitCode: 0,
+      truncated: false,
     });
 
     const res = await request(app)
@@ -46,6 +47,7 @@ describe("POST /api/exercises/cash-register", () => {
       stdout: "result\n",
       stderr: "",
       exitCode: 0,
+      truncated: false,
     });
 
     await request(app)
@@ -80,6 +82,7 @@ describe("POST /api/exercises/cash-register", () => {
       stdout: "",
       stderr: "parse error",
       exitCode: 1,
+      truncated: false,
     });
 
     const res = await request(app).post("/api/exercises/cash-register").send({ input: "bad\n" });
@@ -100,6 +103,7 @@ describe("POST /api/exercises/missing-number", () => {
       stdout: "3\n",
       stderr: "",
       exitCode: 0,
+      truncated: false,
     });
 
     const res = await request(app)
@@ -122,6 +126,7 @@ describe("POST /api/exercises/missing-number", () => {
       stdout: "",
       stderr: "error",
       exitCode: 1,
+      truncated: false,
     });
 
     const res = await request(app).post("/api/exercises/missing-number").send({ input: "bad" });
@@ -138,6 +143,7 @@ describe("POST /api/exercises/morse-code/encode", () => {
       stdout: ".... . .-.. .-.. ---\n",
       stderr: "",
       exitCode: 0,
+      truncated: false,
     });
 
     const res = await request(app)
@@ -160,6 +166,7 @@ describe("POST /api/exercises/morse-code/encode", () => {
       stdout: "",
       stderr: "error",
       exitCode: 1,
+      truncated: false,
     });
 
     const res = await request(app).post("/api/exercises/morse-code/encode").send({ input: "bad" });
@@ -174,6 +181,7 @@ describe("POST /api/exercises/morse-code/decode", () => {
       stdout: "HELLO\n",
       stderr: "",
       exitCode: 0,
+      truncated: false,
     });
 
     const res = await request(app)
@@ -200,6 +208,7 @@ describe("POST /api/exercises/on-screen-keyboard", () => {
       stdout: "D,R,R,R,S,U,L,L,L,S\n",
       stderr: "",
       exitCode: 0,
+      truncated: false,
     });
 
     const res = await request(app)
@@ -216,6 +225,7 @@ describe("POST /api/exercises/on-screen-keyboard", () => {
       stdout: "output\n",
       stderr: "",
       exitCode: 0,
+      truncated: false,
     });
 
     await request(app).post("/api/exercises/on-screen-keyboard").send({ input: "test\n" });
@@ -237,6 +247,7 @@ describe("POST /api/exercises/on-screen-keyboard", () => {
       stdout: "",
       stderr: "error",
       exitCode: 1,
+      truncated: false,
     });
 
     const res = await request(app).post("/api/exercises/on-screen-keyboard").send({ input: "bad" });
@@ -253,6 +264,7 @@ describe("runner.ts (unit)", () => {
       stdout: "ok\n",
       stderr: "",
       exitCode: 0,
+      truncated: false,
     });
 
     await request(app).post("/api/exercises/cash-register").send({ input: "1,2\n" });
@@ -268,6 +280,7 @@ describe("runner.ts (unit)", () => {
       stdout: "ok\n",
       stderr: "",
       exitCode: 0,
+      truncated: false,
     });
 
     await request(app).post("/api/exercises/missing-number").send({ input: "1,2\n" });
