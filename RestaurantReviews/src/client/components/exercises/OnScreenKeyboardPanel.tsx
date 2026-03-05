@@ -146,14 +146,39 @@ function KeyboardViz({ output }: { output: string }) {
               const isCursor = current.row === ri && current.col === ci;
               const isJustSelected = isCursor && current.selected === ch;
               const wasVisited = visitedCells.has(`${ri},${ci}`);
+
+              let bg = "#1e293b";
+              let border = "#334155";
+              let color = "#94a3b8";
+              let shadow = "none";
+
+              if (wasVisited && !isCursor) {
+                bg = "#1a2e3d";
+                border = "#2d4a5c";
+                color = "#5eaac0";
+              }
+              if (isCursor) {
+                bg = "#1e3a5f";
+                border = "#38bdf8";
+                color = "#38bdf8";
+                shadow = "0 0 8px rgba(56, 189, 248, 0.3)";
+              }
+              if (isJustSelected) {
+                bg = "#164e63";
+                border = "#22d3ee";
+                color = "#22d3ee";
+                shadow = "0 0 12px rgba(34, 211, 238, 0.4)";
+              }
+
               return (
                 <div
                   key={ci}
                   style={{
                     ...s.cell,
-                    ...(wasVisited && !isCursor ? s.cellVisited : {}),
-                    ...(isCursor ? s.cellCursor : {}),
-                    ...(isJustSelected ? s.cellSelected : {}),
+                    background: bg,
+                    borderColor: border,
+                    color,
+                    boxShadow: shadow,
                   }}
                 >
                   {ch}
@@ -404,23 +429,8 @@ const s = {
     fontSize: "16px",
     fontWeight: 600,
   },
-  cellVisited: {
-    background: "#1a2e3d",
-    borderColor: "#2d4a5c",
-    color: "#5eaac0",
-  },
-  cellCursor: {
-    background: "#1e3a5f",
-    borderColor: "#38bdf8",
-    color: "#38bdf8",
-    boxShadow: "0 0 8px rgba(56, 189, 248, 0.3)",
-  },
-  cellSelected: {
-    background: "#164e63",
-    borderColor: "#22d3ee",
-    color: "#22d3ee",
-    boxShadow: "0 0 12px rgba(34, 211, 238, 0.4)",
-  },
+  // Cell state colors are computed inline to ensure React always
+  // explicitly sets every property, preventing stale styles.
   moveIndicator: {
     display: "flex",
     alignItems: "center",
