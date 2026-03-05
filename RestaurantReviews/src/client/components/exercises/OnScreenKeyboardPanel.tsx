@@ -403,7 +403,6 @@ const s = {
     fontFamily: "monospace",
     fontSize: "16px",
     fontWeight: 600,
-    transition: "all 0.12s ease",
   },
   cellVisited: {
     background: "#1a2e3d",
