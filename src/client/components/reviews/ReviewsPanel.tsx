@@ -24,7 +24,7 @@ export function ReviewsPanel() {
           functional web interface.
         </ContextBox.Section>
         <ContextBox.Section heading="Solution">
-          <Lang>TypeScript / React</Lang>. TrueFit's core stack. Express + better-sqlite3 on
+          <Lang>TypeScript / React</Lang>. Express + better-sqlite3 on
           the backend with RESTful routes for all three entities. React frontend with data tables,
           inline editing, entity picker dropdowns, and client-side filtering. This panel also serves
           as a <em>unified control panel</em> integrating all 5 other exercises as live, interactive

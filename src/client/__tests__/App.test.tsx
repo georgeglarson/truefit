@@ -48,7 +48,7 @@ describe("App", () => {
   it("renders the header", () => {
     mockInitialLoads();
     render(<App />);
-    expect(screen.getByText("TrueFit Code Challenge")).toBeInTheDocument();
+    expect(screen.getByText("Code Exercises")).toBeInTheDocument();
   });
 
   it("renders tab navigation", () => {

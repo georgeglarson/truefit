@@ -53,7 +53,7 @@ const EXERCISES: {
     name: "Restaurant Reviews",
     lang: "TypeScript / React",
     color: "#38bdf8",
-    why: "TrueFit\u2019s core stack. The most substantial exercise doubles as the unified control panel integrating all 5 other exercises as live panels.",
+    why: "The most substantial exercise doubles as the unified control panel integrating all 5 other exercises as live panels.",
     tests: 371,
   },
 ];
