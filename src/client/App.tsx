@@ -29,7 +29,7 @@ export function App() {
           <span style={styles.subtitle}>6 exercises &middot; 6 languages &middot; 960+ tests</span>
         </div>
         <a
-          href="https://github.com/georgeglarson/truefit"
+          href="https://github.com/georgeglarson/codetest"
           target="_blank"
           rel="noopener noreferrer"
           style={styles.repoLink}
