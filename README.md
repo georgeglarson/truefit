@@ -1,5 +1,7 @@
 # TrueFit Code Exercises
 
+> Also on [Codeberg](https://codeberg.org/georgelarson/codetest)
+
 [![CI](https://github.com/georgeglarson/truefit/actions/workflows/ci.yml/badge.svg)](https://github.com/georgeglarson/truefit/actions/workflows/ci.yml)
 
 **[Live Demo](https://truefit.georgelarson.me)** | Solutions to TrueFit's coding challenges. Each exercise is implemented in a different language, chosen to match the problem domain.
